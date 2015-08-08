@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cgm", "cgm\cgm.csproj", "{F22E62F9-299A-4378-9FFF-295B9D1E39D5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Communication", "Communication\Communication.csproj", "{CD2DB0CC-75A2-4E51-B3F2-9AFE442F6833}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{F22E62F9-299A-4378-9FFF-295B9D1E39D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F22E62F9-299A-4378-9FFF-295B9D1E39D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F22E62F9-299A-4378-9FFF-295B9D1E39D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD2DB0CC-75A2-4E51-B3F2-9AFE442F6833}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD2DB0CC-75A2-4E51-B3F2-9AFE442F6833}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD2DB0CC-75A2-4E51-B3F2-9AFE442F6833}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD2DB0CC-75A2-4E51-B3F2-9AFE442F6833}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
