@@ -1,1 +1,1 @@
-test
+The Global Manager for InterSystems Cache Database
