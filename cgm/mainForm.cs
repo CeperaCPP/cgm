@@ -48,6 +48,11 @@ namespace cpm
         {
             //MessageBox.Show("hello");
         }
+
+        private void searchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
         //=====================================================================
     }
 }
