@@ -61,12 +61,10 @@
             this.toolStripButtonF12 = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.listViewLeft = new System.Windows.Forms.ListView();
-            this.treeView2 = new System.Windows.Forms.TreeView();
             this.toolStripLeft = new System.Windows.Forms.ToolStrip();
             this.toolStripLeftServer = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripComboBox2 = new System.Windows.Forms.ToolStripComboBox();
             this.listViewRight = new System.Windows.Forms.ListView();
-            this.treeView1 = new System.Windows.Forms.TreeView();
             this.toolStripRight = new System.Windows.Forms.ToolStrip();
             this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripComboBox3 = new System.Windows.Forms.ToolStripComboBox();
@@ -358,13 +356,11 @@
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.listViewLeft);
-            this.splitContainer1.Panel1.Controls.Add(this.treeView2);
             this.splitContainer1.Panel1.Controls.Add(this.toolStripLeft);
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.listViewRight);
-            this.splitContainer1.Panel2.Controls.Add(this.treeView1);
             this.splitContainer1.Panel2.Controls.Add(this.toolStripRight);
             this.splitContainer1.Size = new System.Drawing.Size(784, 513);
             this.splitContainer1.SplitterDistance = 390;
@@ -373,20 +369,13 @@
             // listViewLeft
             // 
             this.listViewLeft.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewLeft.GridLines = true;
             this.listViewLeft.Location = new System.Drawing.Point(0, 25);
             this.listViewLeft.Name = "listViewLeft";
             this.listViewLeft.Size = new System.Drawing.Size(390, 488);
             this.listViewLeft.TabIndex = 1;
             this.listViewLeft.UseCompatibleStateImageBehavior = false;
             this.listViewLeft.SelectedIndexChanged += new System.EventHandler(this.listView2_SelectedIndexChanged);
-            // 
-            // treeView2
-            // 
-            this.treeView2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeView2.Location = new System.Drawing.Point(0, 25);
-            this.treeView2.Name = "treeView2";
-            this.treeView2.Size = new System.Drawing.Size(390, 488);
-            this.treeView2.TabIndex = 22;
             // 
             // toolStripLeft
             // 
@@ -418,15 +407,6 @@
             this.listViewRight.Size = new System.Drawing.Size(390, 488);
             this.listViewRight.TabIndex = 2;
             this.listViewRight.UseCompatibleStateImageBehavior = false;
-            // 
-            // treeView1
-            // 
-            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeView1.Location = new System.Drawing.Point(0, 25);
-            this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(390, 488);
-            this.treeView1.TabIndex = 21;
-            this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
             // toolStripRight
             // 
@@ -518,6 +498,7 @@
             this.MainMenuStrip = this.mainmenu;
             this.Name = "mainForm";
             this.Text = "Cache Globals Manager";
+            this.Load += new System.EventHandler(this.mainForm_Load);
             this.mainmenu.ResumeLayout(false);
             this.mainmenu.PerformLayout();
             this.toolStripBottom.ResumeLayout(false);
@@ -562,12 +543,10 @@
         private System.Windows.Forms.ToolStripComboBox toolStripLeftServer;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox2;
         private System.Windows.Forms.ListView listViewRight;
-        private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.ToolStrip toolStripRight;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox1;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox3;
         private System.Windows.Forms.ListView listViewLeft;
-        private System.Windows.Forms.TreeView treeView2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
