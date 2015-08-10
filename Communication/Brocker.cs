@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InterSystems.Data.CacheClient;
-using InterSystems.Data.CacheTypes;
-using SysGM;
+//using InterSystems.Data.CacheClient;
+//using InterSystems.Data.CacheTypes;
+//using SysGM;
 using VISMLib;
 
 namespace Communication
@@ -16,21 +16,27 @@ namespace Communication
         private bool _connstatus = false;
 
         ///====================================================================
+        /// <summary>
         /// Конструктор по-умолчанию
+        /// </summary>
         ///====================================================================
         public Brocker()
         {
             _vism = new VisM();
         }
         ///====================================================================
-        /// Диструктор
+        /// <summary>
+        /// Деструктор
+        /// </summary>
         ///====================================================================
         ~Brocker()
         {
 
         }
         ///====================================================================
+        /// <summary>
         /// Подключиться к базе
+        /// </summary>
         ///====================================================================
         public bool Connect(string Server, string Port, string User = "", string Password = "")
         {
@@ -46,7 +52,9 @@ namespace Communication
 
         }
         ///====================================================================
+        /// <summary>
         /// Отключиться от базы
+        /// </summary>
         ///====================================================================
         public void Disconnect()
         {
@@ -56,7 +64,9 @@ namespace Communication
 
         }
         ///====================================================================
+        /// <summary>
         /// Инициализация списка областей БД во временный глобал
+        /// </summary>
         ///====================================================================
         public void InitNSP()
         {
@@ -68,7 +78,9 @@ namespace Communication
 
         }
         ///====================================================================
+        /// <summary>
         /// Очистка списка областей
+        /// </summary>
         ///====================================================================
         public void ClearNSP()
         {
@@ -77,7 +89,9 @@ namespace Communication
             _vism.Execute(cmd);
         }
         ///====================================================================
+        /// <summary>
         /// Следующая область
+        /// </summary>
         ///====================================================================
         public string GetNextNSP(string NSP = "")
         {
@@ -88,7 +102,9 @@ namespace Communication
             return _vism.VALUE;
         }
         ///====================================================================
+        /// <summary>
         /// Предыдущая область
+        /// </summary>
         ///====================================================================
         public string GetPreviousNSP(string NSP = "")
         {
@@ -99,9 +115,11 @@ namespace Communication
             return _vism.VALUE;
         }
         ///====================================================================
-        /// Инициализация списка глобалов для заданной области
+        /// <summary>
+        /// Инициализация временного буфера глобалов для заданной области
+        /// </summary>
         ///====================================================================
-        public void InitGlbList(string NSP = "")
+        public void InitGlb(string NSP = "")
         {
             string cmd;
             cmd = "k ^CacheTempJ($J)";
@@ -115,7 +133,71 @@ namespace Communication
             _vism.Execute(cmd);
         }
         ///====================================================================
+        /// <summary>
+        /// Следующий глобал из буфера
+        /// </summary>
+        ///====================================================================
+        public string NextGlobal(string Glb = "", int Type = 1)
+        {
+            string res;
+            string buf;
+            buf = "^CacheTempJ($J)";
+            res = Next(buf, Glb, "1", Type);
+            return res;
+        }
+        ///====================================================================
+        /// <summary>
+        /// Предыдущий глобал из буфера
+        /// </summary>
+        ///====================================================================
+        public string PreviousGlobal(string Glb = "", int Type = 1)
+        {
+            string res;
+            string buf;
+            buf = "^CacheTempJ($J)";
+            res = Next(buf, Glb, "-1", Type);
+            return res;
+        }
+        ///====================================================================
+        /// <summary>
+        /// Очистить временный буфер со списком глобалов
+        /// </summary>
+        ///====================================================================
+        public void ClearGlb()
+        {
+            string cmd;
+            cmd = "k ^CacheTempJ($J)";
+            _vism.Execute(cmd);
+        }
+        ///====================================================================
+        /// <summary>
+        /// Следующий произвольный глобал
+        /// Order - порядок следования "1" -прямой, "-1" -обратный
+        /// Type - тип представления (1 - послойный, иначе - в видет таблицы)
+        /// </summary>
+        ///====================================================================
+        public string Next(string Glb = "",string Nod="",string Order = "1",int Type = 1)
+        {
+            string cmd;
+            string node;
+            _vism.P0 = Glb;
+            _vism.P1 = Nod;
+            if (Type == 1)
+            {
+                cmd = "S VALUE=$O(@P0@(P1),"+Order+")";
+            }
+            else
+            {
+                cmd = "S VALUE=$Q(@P0@(P1)," + Order + ")";                
+            }
+            _vism.Execute(cmd);
+            node = _vism.VALUE;
+            return node;
+        }
+        ///====================================================================
+        /// <summary>
         /// Статус соединения
+        /// </summary>
         ///====================================================================
         public bool getConnectionStatus()
         {

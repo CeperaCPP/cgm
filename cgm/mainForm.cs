@@ -17,31 +17,55 @@ namespace cpm
         private Brocker _rightbrocker = null;
 
         //private string _serverL = "127.0.0.1" ; //"WIN10";
-        private string _serverL = "WIN10";
-        private string _portL = "1972";
-        private string _userL = "_system";
-        private string _passwordL = "SYS";
+        private string _serverL;
+        private string _portL;
+        private string _userL;
+        private string _passwordL;
 
-        private string _serverR = "WIN10";
-        private string _portR = "1972";
-        private string _userR = "_system";
-        private string _passwordR = "SYS";
+        private string _serverR;
+        private string _portR;
+        private string _userR;
+        private string _passwordR;
         public mainForm()
         {
             InitializeComponent();
             _leftbrocker = new Brocker();
             _rightbrocker = new Brocker();
+            readConfig();
+        }
+        ///====================================================================
+        /// <summary>
+        /// Прочитать настройки
+        /// </summary>
+        ///====================================================================
+
+        private void readConfig()
+        {
+            // левая панель
+            _serverL = "WIN10";
+            _portL = "1972";
+            _userL = "_system";
+            _passwordL = "SYS";
+            // правая панель
+            _serverR = "WIN10";
+            _portR = "1972";
+            _userR = "_system";
+            _passwordR = "SYS";
         }
 
-        //=====================================================================
+        ///====================================================================
+        /// <summary>
         /// Изменение размера функциональных клавиш
-        //=====================================================================
+        /// </summary>
+        ///=====================================================================
         private void toolStripBottom_Resize(object sender, EventArgs e)
         {
             //MessageBox.Show("hello");
         }
         ///====================================================================
+        /// <summary>
         /// Обработчик загрузки формы
+        /// </summary>
         ///====================================================================
         private void mainForm_Load(object sender, EventArgs e)
         {
@@ -58,7 +82,9 @@ namespace cpm
             }
         }
         ///====================================================================
+        /// <summary>
         /// Закрытие формы
+        /// </summary>
         ///====================================================================
         private void mainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -74,7 +100,9 @@ namespace cpm
             }
         }
         ///====================================================================
+        /// <summary>
         /// Обработчик события отрисовки контнейнера
+        /// </summary>
         ///====================================================================
         private void splitContainer1_Paint(object sender, PaintEventArgs e)
         {            
@@ -83,7 +111,9 @@ namespace cpm
             
         }
         ///====================================================================
+        /// <summary>
         /// Инициализация панели
+        /// </summary>
         ///====================================================================
         private void PanelInit(Brocker brokerobj,ToolStripComboBox cbNSP, ListView lstview)
         {
