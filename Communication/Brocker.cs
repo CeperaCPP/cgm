@@ -13,6 +13,7 @@ namespace Communication
     public class Brocker
     {
         private VisM _vism = null;
+        private bool _connstatus = false;
 
         ///====================================================================
         /// Конструктор по-умолчанию
@@ -31,10 +32,16 @@ namespace Communication
         ///====================================================================
         /// Подключиться к базе
         ///====================================================================
-        public void Connect(string Server, string Port, string User = "", string Password = "")
+        public bool Connect(string Server, string Port, string User = "", string Password = "")
         {
-            _vism.SetServer("CN_IPTCP:" + Server + "[" + Port + "]:"+User+":"+Password);
-            _vism.Execute("s $ZT=\"BACK^%ETN\"");
+            int res;
+            res = _vism.SetServer("CN_IPTCP:" + Server + "[" + Port + "]:"+User+":"+Password);
+            if (res == 0)
+            {
+                _connstatus = true;
+                _vism.Execute("s $ZT=\"BACK^%ETN\"");
+            }
+            return _connstatus;
             //_vism.Connect("CN_IPTCP:127.0.0.1[1972]");
 
         }
@@ -45,6 +52,7 @@ namespace Communication
         {
             _vism.SetServer("");
             _vism.DeleteConnection();
+            _connstatus = false;
 
         }
         ///====================================================================
@@ -107,11 +115,11 @@ namespace Communication
             _vism.Execute(cmd);
         }
         ///====================================================================
-        ///
+        /// Статус соединения
         ///====================================================================
-        public string getConnectionString()
-        {            
-            return "";
+        public bool getConnectionStatus()
+        {
+            return _connstatus;
         }
         ///====================================================================
     }
