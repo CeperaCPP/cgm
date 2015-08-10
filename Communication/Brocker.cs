@@ -45,12 +45,23 @@ namespace Communication
             if (res == 0)
             {
                 _connstatus = true;
-                _vism.Execute("s $ZT=\"BACK^%ETN\"");
+                _vism.ErrorTrap = true;
+                _vism.OnError += _vism_OnError;
             }
             return _connstatus;
             //_vism.Connect("CN_IPTCP:127.0.0.1[1972]");
 
         }
+        ///====================================================================
+        /// <summary>
+        /// Обработчик ошибок выполнения кода через vism
+        /// </summary>
+        ///====================================================================        
+        void _vism_OnError()
+        {
+            _vism.Execute("d BACK^%ETN");
+        }
+        
         ///====================================================================
         /// <summary>
         /// Отключиться от базы
@@ -202,6 +213,29 @@ namespace Communication
         public bool getConnectionStatus()
         {
             return _connstatus;
+        }
+        ///====================================================================
+        /// <summary>
+        /// Вернуть строку для таблицы
+        /// </summary>
+        ///====================================================================
+        public string getRow(string glb = "")
+        {
+            return "";
+        }
+        ///====================================================================
+        /// <summary>
+        /// Поиск
+        /// </summary>
+        ///====================================================================
+        public string Find()
+        {
+            string cmd;
+            // P0 - глобал, P1 - узел, P2 - строка для поиска, P3 - параметры поиска (1 в узлах, 2 в значениях, 3 и там и там)
+            cmd = "s nod=P1 f  s nod=$O(@P0@(nod),1) Q:nod=\"\"  I (P3=1!P3=3),$F(nod,P2) S VALUE=nod Q  I (P3=2!P3=3),$F($G(@P0@(nod)),P2) S VALUE=nod Q";
+            cmd="s nod=$NA(@P0@(P1)) f  s nod=$Q(@nod,1) Q:nod=\"\"  I (P3=1!P3=3),$F(nod,P2) S VALUE=nod Q  I (P3=2!P3=3),$F($G(@nod),P2) S VALUE=nod Q";
+
+            return "";
         }
         ///====================================================================
     }
