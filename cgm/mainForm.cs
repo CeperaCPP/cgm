@@ -19,33 +19,9 @@ namespace cpm
         {
             InitializeComponent();
             _leftbrocker = new Brocker();
-            _rightbrocker = _leftbrocker;
+            _rightbrocker = new Brocker();
         }
 
-        private void toolStripLabel1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-
-        }
-
-        private void listView2_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void toolStripRight_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-
-        }
         //=====================================================================
         /// Изменение размера функциональных клавиш
         //=====================================================================
@@ -53,16 +29,54 @@ namespace cpm
         {
             //MessageBox.Show("hello");
         }
-
-        private void searchToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
+        ///====================================================================
+        /// Обработчик загрузки формы
+        ///====================================================================
         private void mainForm_Load(object sender, EventArgs e)
         {
             //MessageBox.Show("hello");
+            _leftbrocker.Connect("127.0.0.1", "1972");
+            _rightbrocker.Connect("127.0.0.1", "1972");
+            _leftbrocker.InitNSP();
+            _rightbrocker.InitNSP();
+
+            PanelInit(_leftbrocker,toolStripLeftNSP, listViewLeft);
+            PanelInit(_rightbrocker,toolStripRightNSP, listViewRight);
+        }
+        ///====================================================================
+        /// Закрытие формы
+        ///====================================================================
+        private void mainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _leftbrocker.ClearNSP();
+            _rightbrocker.ClearNSP();
+            _leftbrocker.Disconnect();
+            _rightbrocker.Disconnect();
+        }
+        ///====================================================================
+        /// Обработчик события отрисовки контнейнера
+        ///====================================================================
+        private void splitContainer1_Paint(object sender, PaintEventArgs e)
+        {            
+            //PanelInit(_leftbrocker);
+            //PanelInit(_rightbrocker);
             
+        }
+        ///====================================================================
+        /// Инициализация панели
+        ///====================================================================
+        private void PanelInit(Brocker brokerobj,ToolStripComboBox cbNSP, ListView lstview)
+        {
+            //brokerobj.InitNSP();
+            string nsp = brokerobj.GetNextNSP("");
+            while (nsp != "")
+            {                
+                cbNSP.Items.Add(nsp);
+                lstview.Items.Add(nsp);
+                nsp = brokerobj.GetNextNSP(nsp);
+            }
+
+            //brokerobj.ClearNSP();
         }
         //=====================================================================
     }

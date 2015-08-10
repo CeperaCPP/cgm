@@ -33,6 +33,13 @@
             this.mainmenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.configToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.globalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.moveToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.findToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.toolStripBottom = new System.Windows.Forms.ToolStrip();
@@ -63,18 +70,11 @@
             this.listViewLeft = new System.Windows.Forms.ListView();
             this.toolStripLeft = new System.Windows.Forms.ToolStrip();
             this.toolStripLeftServer = new System.Windows.Forms.ToolStripComboBox();
-            this.toolStripComboBox2 = new System.Windows.Forms.ToolStripComboBox();
+            this.toolStripLeftNSP = new System.Windows.Forms.ToolStripComboBox();
             this.listViewRight = new System.Windows.Forms.ListView();
             this.toolStripRight = new System.Windows.Forms.ToolStrip();
-            this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
-            this.toolStripComboBox3 = new System.Windows.Forms.ToolStripComboBox();
-            this.globalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.createToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.copyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.moveToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripRightServer = new System.Windows.Forms.ToolStripComboBox();
+            this.toolStripRightNSP = new System.Windows.Forms.ToolStripComboBox();
             this.mainmenu.SuspendLayout();
             this.toolStripBottom.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -109,6 +109,59 @@
             this.configToolStripMenuItem.Name = "configToolStripMenuItem";
             this.configToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
             this.configToolStripMenuItem.Text = "Config";
+            // 
+            // globalToolStripMenuItem
+            // 
+            this.globalToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.createToolStripMenuItem1,
+            this.copyToolStripMenuItem1,
+            this.moveToolStripMenuItem1,
+            this.deleteToolStripMenuItem1,
+            this.findToolStripMenuItem});
+            this.globalToolStripMenuItem.Name = "globalToolStripMenuItem";
+            this.globalToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
+            this.globalToolStripMenuItem.Text = "Global";
+            // 
+            // createToolStripMenuItem1
+            // 
+            this.createToolStripMenuItem1.Name = "createToolStripMenuItem1";
+            this.createToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F4)));
+            this.createToolStripMenuItem1.Size = new System.Drawing.Size(159, 22);
+            this.createToolStripMenuItem1.Text = "Create";
+            // 
+            // copyToolStripMenuItem1
+            // 
+            this.copyToolStripMenuItem1.Name = "copyToolStripMenuItem1";
+            this.copyToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F5;
+            this.copyToolStripMenuItem1.Size = new System.Drawing.Size(159, 22);
+            this.copyToolStripMenuItem1.Text = "Copy";
+            // 
+            // moveToolStripMenuItem1
+            // 
+            this.moveToolStripMenuItem1.Name = "moveToolStripMenuItem1";
+            this.moveToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F6;
+            this.moveToolStripMenuItem1.Size = new System.Drawing.Size(159, 22);
+            this.moveToolStripMenuItem1.Text = "Move";
+            // 
+            // deleteToolStripMenuItem1
+            // 
+            this.deleteToolStripMenuItem1.Name = "deleteToolStripMenuItem1";
+            this.deleteToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F8;
+            this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(159, 22);
+            this.deleteToolStripMenuItem1.Text = "Delete";
+            // 
+            // findToolStripMenuItem
+            // 
+            this.findToolStripMenuItem.Name = "findToolStripMenuItem";
+            this.findToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F7;
+            this.findToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.findToolStripMenuItem.Text = "Find";
+            // 
+            // viewToolStripMenuItem
+            // 
+            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.viewToolStripMenuItem.Text = "View";
             // 
             // contextMenuStrip1
             // 
@@ -365,24 +418,26 @@
             this.splitContainer1.Size = new System.Drawing.Size(784, 513);
             this.splitContainer1.SplitterDistance = 390;
             this.splitContainer1.TabIndex = 22;
+            this.splitContainer1.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Paint);
             // 
             // listViewLeft
             // 
             this.listViewLeft.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewLeft.FullRowSelect = true;
             this.listViewLeft.GridLines = true;
             this.listViewLeft.Location = new System.Drawing.Point(0, 25);
             this.listViewLeft.Name = "listViewLeft";
             this.listViewLeft.Size = new System.Drawing.Size(390, 488);
             this.listViewLeft.TabIndex = 1;
             this.listViewLeft.UseCompatibleStateImageBehavior = false;
-            this.listViewLeft.SelectedIndexChanged += new System.EventHandler(this.listView2_SelectedIndexChanged);
+            this.listViewLeft.View = System.Windows.Forms.View.List;
             // 
             // toolStripLeft
             // 
             this.toolStripLeft.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStripLeft.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripLeftServer,
-            this.toolStripComboBox2});
+            this.toolStripLeftNSP});
             this.toolStripLeft.Location = new System.Drawing.Point(0, 0);
             this.toolStripLeft.Name = "toolStripLeft";
             this.toolStripLeft.Size = new System.Drawing.Size(390, 25);
@@ -394,97 +449,46 @@
             this.toolStripLeftServer.Size = new System.Drawing.Size(121, 25);
             this.toolStripLeftServer.Text = "Server";
             // 
-            // toolStripComboBox2
+            // toolStripLeftNSP
             // 
-            this.toolStripComboBox2.Name = "toolStripComboBox2";
-            this.toolStripComboBox2.Size = new System.Drawing.Size(121, 25);
+            this.toolStripLeftNSP.Name = "toolStripLeftNSP";
+            this.toolStripLeftNSP.Size = new System.Drawing.Size(121, 25);
             // 
             // listViewRight
             // 
+            this.listViewRight.AllowDrop = true;
             this.listViewRight.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewRight.FullRowSelect = true;
+            this.listViewRight.GridLines = true;
             this.listViewRight.Location = new System.Drawing.Point(0, 25);
             this.listViewRight.Name = "listViewRight";
             this.listViewRight.Size = new System.Drawing.Size(390, 488);
             this.listViewRight.TabIndex = 2;
             this.listViewRight.UseCompatibleStateImageBehavior = false;
+            this.listViewRight.View = System.Windows.Forms.View.List;
             // 
             // toolStripRight
             // 
             this.toolStripRight.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStripRight.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripComboBox1,
-            this.toolStripComboBox3});
+            this.toolStripRightServer,
+            this.toolStripRightNSP});
             this.toolStripRight.Location = new System.Drawing.Point(0, 0);
             this.toolStripRight.Name = "toolStripRight";
             this.toolStripRight.Size = new System.Drawing.Size(390, 25);
             this.toolStripRight.TabIndex = 13;
             this.toolStripRight.Text = "Right";
-            this.toolStripRight.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStripRight_ItemClicked);
             // 
-            // toolStripComboBox1
+            // toolStripRightServer
             // 
-            this.toolStripComboBox1.Name = "toolStripComboBox1";
-            this.toolStripComboBox1.Size = new System.Drawing.Size(121, 25);
-            this.toolStripComboBox1.Text = "Server";
+            this.toolStripRightServer.Name = "toolStripRightServer";
+            this.toolStripRightServer.Size = new System.Drawing.Size(121, 25);
+            this.toolStripRightServer.Text = "Server";
             // 
-            // toolStripComboBox3
+            // toolStripRightNSP
             // 
-            this.toolStripComboBox3.Name = "toolStripComboBox3";
-            this.toolStripComboBox3.Size = new System.Drawing.Size(121, 25);
-            // 
-            // globalToolStripMenuItem
-            // 
-            this.globalToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.createToolStripMenuItem1,
-            this.copyToolStripMenuItem1,
-            this.moveToolStripMenuItem1,
-            this.deleteToolStripMenuItem1,
-            this.searchToolStripMenuItem});
-            this.globalToolStripMenuItem.Name = "globalToolStripMenuItem";
-            this.globalToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
-            this.globalToolStripMenuItem.Text = "Global";
-            // 
-            // createToolStripMenuItem1
-            // 
-            this.createToolStripMenuItem1.Name = "createToolStripMenuItem1";
-            this.createToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F4)));
-            this.createToolStripMenuItem1.Size = new System.Drawing.Size(159, 22);
-            this.createToolStripMenuItem1.Text = "Create";
-            // 
-            // copyToolStripMenuItem1
-            // 
-            this.copyToolStripMenuItem1.Name = "copyToolStripMenuItem1";
-            this.copyToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.copyToolStripMenuItem1.Size = new System.Drawing.Size(159, 22);
-            this.copyToolStripMenuItem1.Text = "Copy";
-            // 
-            // moveToolStripMenuItem1
-            // 
-            this.moveToolStripMenuItem1.Name = "moveToolStripMenuItem1";
-            this.moveToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F6;
-            this.moveToolStripMenuItem1.Size = new System.Drawing.Size(159, 22);
-            this.moveToolStripMenuItem1.Text = "Move";
-            // 
-            // deleteToolStripMenuItem1
-            // 
-            this.deleteToolStripMenuItem1.Name = "deleteToolStripMenuItem1";
-            this.deleteToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F8;
-            this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(159, 22);
-            this.deleteToolStripMenuItem1.Text = "Delete";
-            // 
-            // viewToolStripMenuItem
-            // 
-            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.viewToolStripMenuItem.Text = "View";
-            // 
-            // searchToolStripMenuItem
-            // 
-            this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
-            this.searchToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F7;
-            this.searchToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
-            this.searchToolStripMenuItem.Text = "Find";
-            this.searchToolStripMenuItem.Click += new System.EventHandler(this.searchToolStripMenuItem_Click);
+            this.toolStripRightNSP.Name = "toolStripRightNSP";
+            this.toolStripRightNSP.Size = new System.Drawing.Size(121, 25);
             // 
             // mainForm
             // 
@@ -498,6 +502,7 @@
             this.MainMenuStrip = this.mainmenu;
             this.Name = "mainForm";
             this.Text = "Cache Globals Manager";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.mainForm_FormClosing);
             this.Load += new System.EventHandler(this.mainForm_Load);
             this.mainmenu.ResumeLayout(false);
             this.mainmenu.PerformLayout();
@@ -541,11 +546,11 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ToolStrip toolStripLeft;
         private System.Windows.Forms.ToolStripComboBox toolStripLeftServer;
-        private System.Windows.Forms.ToolStripComboBox toolStripComboBox2;
+        private System.Windows.Forms.ToolStripComboBox toolStripLeftNSP;
         private System.Windows.Forms.ListView listViewRight;
         private System.Windows.Forms.ToolStrip toolStripRight;
-        private System.Windows.Forms.ToolStripComboBox toolStripComboBox1;
-        private System.Windows.Forms.ToolStripComboBox toolStripComboBox3;
+        private System.Windows.Forms.ToolStripComboBox toolStripRightServer;
+        private System.Windows.Forms.ToolStripComboBox toolStripRightNSP;
         private System.Windows.Forms.ListView listViewLeft;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
@@ -563,7 +568,7 @@
         private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem moveToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem findToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
     }
 }

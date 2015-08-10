@@ -6,58 +6,113 @@ using System.Threading.Tasks;
 using InterSystems.Data.CacheClient;
 using InterSystems.Data.CacheTypes;
 using SysGM;
+using VISMLib;
 
 namespace Communication
 {
     public class Brocker
     {
-        private CacheConnection _connection = null;
-        private API _cacheapi = null;
-
+        private VisM _vism = null;
 
         ///====================================================================
         /// Конструктор по-умолчанию
         ///====================================================================
         public Brocker()
         {
-            CacheConnection _connection = new CacheConnection();
-            _connection.ConnectionString = CacheConnection.ConnectDlg();
-            _connection.Open();
-            _cacheapi = new API(_connection);
-        }
-        ///====================================================================
-        /// конструктор для готового подключения
-        ///====================================================================
-        public Brocker(CacheConnection conn)
-        {
-            _connection = conn;
-            _cacheapi = new API(_connection);
-        }
-        ///====================================================================
-        /// СОздание подключения по строке подключения
-        ///====================================================================
-        public Brocker(string connString)
-        {
-            CacheConnection _connection = new CacheConnection(connString);
-            _cacheapi = new API(_connection);
+            _vism = new VisM();
         }
         ///====================================================================
         /// Диструктор
         ///====================================================================
         ~Brocker()
         {
-            //_cacheapi.Dispose();
-            //_connection.CloseAllObjects();
-            //_connection.CloseAllUnreachableObjects();
-            //if (_connection.State.ToString() == "Open")
-            //{
-                //_cacheapi.Connection.Close();
-                //_connection.Close();
-            //}
-            _cacheapi.Dispose();
-            //_connection.Dispose();
+
         }
-        //public string 
+        ///====================================================================
+        /// Подключиться к базе
+        ///====================================================================
+        public void Connect(string Server, string Port, string User = "", string Password = "")
+        {
+            _vism.SetServer("CN_IPTCP:" + Server + "[" + Port + "]:"+User+":"+Password);
+            _vism.Execute("s $ZT=\"BACK^%ETN\"");
+            //_vism.Connect("CN_IPTCP:127.0.0.1[1972]");
+
+        }
+        ///====================================================================
+        /// Отключиться от базы
+        ///====================================================================
+        public void Disconnect()
+        {
+            _vism.SetServer("");
+            _vism.DeleteConnection();
+
+        }
+        ///====================================================================
+        /// Инициализация списка областей БД во временный глобал
+        ///====================================================================
+        public void InitNSP()
+        {
+            string cmd;
+            //if (_vism.ConnectionState == 0) return;
+            ClearNSP();
+            cmd = "f i=1:1:$ZU(90,0) s:$ZU(90,2,0,i)'=\"\" ^CacheTempNSP($J,$ZU(90,2,0,i))=\"\"";
+            _vism.Execute(cmd);
+
+        }
+        ///====================================================================
+        /// Очистка списка областей
+        ///====================================================================
+        public void ClearNSP()
+        {
+            string cmd;            
+            cmd = "kill ^CacheTempNSP($J)";
+            _vism.Execute(cmd);
+        }
+        ///====================================================================
+        /// Следующая область
+        ///====================================================================
+        public string GetNextNSP(string NSP = "")
+        {
+            _vism.P1 = "^CacheTempNSP($J)";
+            _vism.P2 = NSP;
+            string cmd = "S VALUE=$O(@P1@(P2))";
+            _vism.Execute(cmd);
+            return _vism.VALUE;
+        }
+        ///====================================================================
+        /// Предыдущая область
+        ///====================================================================
+        public string GetPreviousNSP(string NSP = "")
+        {
+            _vism.P1 = "^CacheTempNSP($J)";
+            _vism.P2 = NSP;
+            string cmd = "S VALUE=$O(@P1@(P2),-1)";
+            _vism.Execute(cmd);
+            return _vism.VALUE;
+        }
+        ///====================================================================
+        /// Инициализация списка глобалов для заданной области
+        ///====================================================================
+        public void InitGlbList(string NSP = "")
+        {
+            string cmd;
+            cmd = "k ^CacheTempJ($J)";
+            _vism.Execute(cmd);
+            _vism.P1 = NSP;
+            cmd = "S:$G(P1)=\"\" P1=$ZU(5)";
+            _vism.Execute(cmd);
+            cmd = "D INT^%GD(P1)";
+            _vism.Execute(cmd);
+            cmd = "S rc=$$Fetch^%GD(\"*\",1,0)";
+            _vism.Execute(cmd);
+        }
+        ///====================================================================
+        ///
+        ///====================================================================
+        public string getConnectionString()
+        {            
+            return "";
+        }
         ///====================================================================
     }
 }
