@@ -426,11 +426,13 @@
             this.listViewLeft.FullRowSelect = true;
             this.listViewLeft.GridLines = true;
             this.listViewLeft.Location = new System.Drawing.Point(0, 25);
+            this.listViewLeft.MultiSelect = false;
             this.listViewLeft.Name = "listViewLeft";
             this.listViewLeft.Size = new System.Drawing.Size(390, 488);
             this.listViewLeft.TabIndex = 1;
             this.listViewLeft.UseCompatibleStateImageBehavior = false;
             this.listViewLeft.View = System.Windows.Forms.View.List;
+            this.listViewLeft.Click += new System.EventHandler(this.listViewLeft_Click);
             // 
             // toolStripLeft
             // 
@@ -461,11 +463,13 @@
             this.listViewRight.FullRowSelect = true;
             this.listViewRight.GridLines = true;
             this.listViewRight.Location = new System.Drawing.Point(0, 25);
+            this.listViewRight.MultiSelect = false;
             this.listViewRight.Name = "listViewRight";
             this.listViewRight.Size = new System.Drawing.Size(390, 488);
             this.listViewRight.TabIndex = 2;
             this.listViewRight.UseCompatibleStateImageBehavior = false;
             this.listViewRight.View = System.Windows.Forms.View.List;
+            this.listViewRight.Click += new System.EventHandler(this.listViewRight_Click);
             // 
             // toolStripRight
             // 

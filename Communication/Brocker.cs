@@ -49,7 +49,6 @@ namespace Communication
                 _vism.OnError += _vism_OnError;
             }
             return _connstatus;
-            //_vism.Connect("CN_IPTCP:127.0.0.1[1972]");
 
         }
         ///====================================================================
@@ -83,20 +82,32 @@ namespace Communication
         {
             string cmd;
             //if (_vism.ConnectionState == 0) return;
-            ClearNSP();
-            cmd = "f i=1:1:$ZU(90,0) s:$ZU(90,2,0,i)'=\"\" ^CacheTempNSP($J,$ZU(90,2,0,i))=\"\"";
+            ClearBUF();
+            //cmd = "f i=1:1:$ZU(90,0) I $ZU(90,2,0,i)'=\"\",##class(%SYS.Namespace).Exists($ZU(90,2,0,i)) S ^CacheTempNSP($J,$ZU(90,2,0,i))=\"\"";
+            //cmd = "DO ##class(%SYS.Namespace).ListAll(.result)";
+            cmd = "set rs=##class(%ResultSet).%New()";
+            _vism.Execute(cmd);
+            cmd = "set rs.ClassName=\"%SYS.Namespace\"";
+            _vism.Execute(cmd);
+            cmd = "set rs.QueryName=\"List\"";
+            _vism.Execute(cmd);
+            cmd = "set sc=rs.Execute()";
+            _vism.Execute(cmd);
+            cmd = "while rs.%Next() { set ^CacheTempCGM($J,rs.Data(\"Nsp\"))=\"\" }";
+            _vism.Execute(cmd);
+            cmd = "k rs,sc";
             _vism.Execute(cmd);
 
         }
         ///====================================================================
         /// <summary>
-        /// Очистка списка областей
+        /// Очистка буфера
         /// </summary>
         ///====================================================================
-        public void ClearNSP()
+        public void ClearBUF()
         {
-            string cmd;            
-            cmd = "kill ^CacheTempNSP($J)";
+            string cmd;
+            cmd = "kill ^CacheTempCGM($J)";
             _vism.Execute(cmd);
         }
         ///====================================================================
@@ -106,7 +117,7 @@ namespace Communication
         ///====================================================================
         public string GetNextNSP(string NSP = "")
         {
-            _vism.P1 = "^CacheTempNSP($J)";
+            _vism.P1 = "^CacheTempCGM($J)";
             _vism.P2 = NSP;
             string cmd = "S VALUE=$O(@P1@(P2))";
             _vism.Execute(cmd);
@@ -119,7 +130,7 @@ namespace Communication
         ///====================================================================
         public string GetPreviousNSP(string NSP = "")
         {
-            _vism.P1 = "^CacheTempNSP($J)";
+            _vism.P1 = "^CacheTempCGM($J)";
             _vism.P2 = NSP;
             string cmd = "S VALUE=$O(@P1@(P2),-1)";
             _vism.Execute(cmd);
@@ -130,17 +141,26 @@ namespace Communication
         /// Инициализация временного буфера глобалов для заданной области
         /// </summary>
         ///====================================================================
-        public void InitGlb(string NSP = "")
+        public void InitGlb(string NSP = "", string SysGlb = "0")
         {
-            string cmd;
-            cmd = "k ^CacheTempJ($J)";
+            string cmd;           
+            ClearBUF();
+            _vism.P1 = NSP;                 //NameSpace 
+            _vism.P2 = "*";                 //Mask 
+            _vism.P3 = SysGlb;   //SystemGlobals
+            //_vism.P4 = "";                  //UnavailableDatabases
+            //_vism.P5 = "";                  //Index           
+            cmd = "set rs=##class(%ResultSet).%New()";
             _vism.Execute(cmd);
-            _vism.P1 = NSP;
-            cmd = "S:$G(P1)=\"\" P1=$ZU(5)";
+            cmd = "set rs.ClassName=\"%SYS.GlobalQuery\"";
             _vism.Execute(cmd);
-            cmd = "D INT^%GD(P1)";
+            cmd = "set rs.QueryName=\"NameSpaceListChui\"";
             _vism.Execute(cmd);
-            cmd = "S rc=$$Fetch^%GD(\"*\",1,0)";
+            cmd = "set sc=rs.Execute(P1,P2,P3)";
+            _vism.Execute(cmd);
+            cmd = "while rs.%Next() { set nam=$P(rs.Data(\"Name\"),\"(\",1),^CacheTempCGM($J,nam)=\"\" }";
+            _vism.Execute(cmd);
+            cmd = "k rs,sc";
             _vism.Execute(cmd);
         }
         ///====================================================================
@@ -152,7 +172,7 @@ namespace Communication
         {
             string res;
             string buf;
-            buf = "^CacheTempJ($J)";
+            buf = "^CacheTempCGM($J)";
             res = Next(buf, Glb, "1", Type);
             return res;
         }
@@ -165,20 +185,9 @@ namespace Communication
         {
             string res;
             string buf;
-            buf = "^CacheTempJ($J)";
+            buf = "^CacheTempCGM($J)";
             res = Next(buf, Glb, "-1", Type);
             return res;
-        }
-        ///====================================================================
-        /// <summary>
-        /// Очистить временный буфер со списком глобалов
-        /// </summary>
-        ///====================================================================
-        public void ClearGlb()
-        {
-            string cmd;
-            cmd = "k ^CacheTempJ($J)";
-            _vism.Execute(cmd);
         }
         ///====================================================================
         /// <summary>
@@ -225,7 +234,7 @@ namespace Communication
         }
         ///====================================================================
         /// <summary>
-        /// Поиск
+        /// Поиск (пока идея)
         /// </summary>
         ///====================================================================
         public string Find()

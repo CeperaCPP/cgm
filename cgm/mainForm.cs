@@ -26,6 +26,13 @@ namespace cpm
         private string _portR;
         private string _userR;
         private string _passwordR;
+
+        private string _showsys;
+        ///====================================================================
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        ///====================================================================
         public mainForm()
         {
             InitializeComponent();
@@ -42,15 +49,17 @@ namespace cpm
         private void readConfig()
         {
             // левая панель
-            _serverL = "WIN10";
+            _serverL = "labc";
             _portL = "1972";
             _userL = "_system";
             _passwordL = "SYS";
             // правая панель
-            _serverR = "WIN10";
+            _serverR = "labc-dev";
             _portR = "1972";
             _userR = "_system";
             _passwordR = "SYS";
+            // Показать системные глобалы
+            _showsys = "1";
         }
 
         ///====================================================================
@@ -60,7 +69,7 @@ namespace cpm
         ///=====================================================================
         private void toolStripBottom_Resize(object sender, EventArgs e)
         {
-            //MessageBox.Show("hello");
+            //MessageBox.Show("hello");            
         }
         ///====================================================================
         /// <summary>
@@ -90,12 +99,12 @@ namespace cpm
         {
             if (_leftbrocker.getConnectionStatus())
             {
-                _leftbrocker.ClearNSP();
+                _leftbrocker.ClearBUF();
                 _leftbrocker.Disconnect();
             }
             if (_rightbrocker.getConnectionStatus())
             {
-                _rightbrocker.ClearNSP();
+                _rightbrocker.ClearBUF();
                 _rightbrocker.Disconnect();
             }
         }
@@ -117,7 +126,6 @@ namespace cpm
         ///====================================================================
         private void PanelInit(Brocker brokerobj,ToolStripComboBox cbNSP, ListView lstview)
         {
-            //brokerobj.InitNSP();
             string nsp = brokerobj.GetNextNSP("");
             while (nsp != "")
             {                
@@ -125,9 +133,31 @@ namespace cpm
                 lstview.Items.Add(nsp);
                 nsp = brokerobj.GetNextNSP(nsp);
             }
-
-            //brokerobj.ClearNSP();
         }
-        //=====================================================================
+        ///====================================================================
+        /// <summary>
+        /// Клик по элементу в левой панели
+        /// </summary>
+        ///====================================================================
+        private void listViewLeft_Click(object sender, EventArgs e)
+        {
+            string nsp;
+            if (listViewLeft.SelectedItems.Count == 0) return;
+            nsp = listViewLeft.SelectedItems[0].Text;
+            _leftbrocker.InitGlb(listViewLeft.SelectedItems[0].Text, _showsys);
+        }
+        ///====================================================================
+        /// <summary>
+        /// Клик по элементу в правой панели
+        /// </summary>
+        ///====================================================================
+        private void listViewRight_Click(object sender, EventArgs e)
+        {
+            string nsp;
+            if (listViewRight.SelectedItems.Count==0) return;
+            nsp = listViewRight.SelectedItems[0].Text;
+            _rightbrocker.InitGlb(nsp, _showsys);
+        }
+        ///====================================================================
     }
 }
