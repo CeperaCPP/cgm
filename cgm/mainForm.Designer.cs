@@ -419,7 +419,6 @@
             this.splitContainer1.SplitterDistance = 390;
             this.splitContainer1.TabIndex = 0;
             this.splitContainer1.TabStop = false;
-            this.splitContainer1.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Paint);
             // 
             // listViewLeft
             // 
@@ -433,7 +432,9 @@
             this.listViewLeft.TabIndex = 1;
             this.listViewLeft.UseCompatibleStateImageBehavior = false;
             this.listViewLeft.View = System.Windows.Forms.View.List;
-            this.listViewLeft.Click += new System.EventHandler(this.listViewLeft_Click);
+            this.listViewLeft.DoubleClick += new System.EventHandler(this.listViewLeft_Click);
+            this.listViewLeft.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewLeft_KeyDown);
+            this.listViewLeft.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listViewLeft_KeyUp);
             // 
             // toolStripLeft
             // 
@@ -470,7 +471,9 @@
             this.listViewRight.TabIndex = 2;
             this.listViewRight.UseCompatibleStateImageBehavior = false;
             this.listViewRight.View = System.Windows.Forms.View.List;
-            this.listViewRight.Click += new System.EventHandler(this.listViewRight_Click);
+            this.listViewRight.DoubleClick += new System.EventHandler(this.listViewRight_Click);
+            this.listViewRight.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewRight_KeyDown);
+            this.listViewRight.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listViewRight_KeyUp);
             // 
             // toolStripRight
             // 

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Reflection;
 using Communication;
 
 namespace cpm
@@ -141,10 +142,8 @@ namespace cpm
         ///====================================================================
         private void listViewLeft_Click(object sender, EventArgs e)
         {
-            string nsp;
-            if (listViewLeft.SelectedItems.Count == 0) return;
-            nsp = listViewLeft.SelectedItems[0].Text;
-            _leftbrocker.InitGlb(listViewLeft.SelectedItems[0].Text, _showsys);
+            ListView lv = (ListView)sender;
+            initGlb(lv, _leftbrocker, _showsys);
         }
         ///====================================================================
         /// <summary>
@@ -153,11 +152,113 @@ namespace cpm
         ///====================================================================
         private void listViewRight_Click(object sender, EventArgs e)
         {
-            string nsp;
-            if (listViewRight.SelectedItems.Count==0) return;
-            nsp = listViewRight.SelectedItems[0].Text;
-            _rightbrocker.InitGlb(nsp, _showsys);
+            ListView lv = (ListView)sender;
+            initGlb(lv, _rightbrocker, _showsys);
         }
+        ///====================================================================
+        /// <summary>
+        /// Клик по элементу в правой панели
+        /// </summary>
+        ///====================================================================
+        private void initGlb(ListView lv, Brocker brokerobj, string ShowSys="1")
+        {
+            string nsp;
+            if (lv.SelectedItems.Count == 0) return;
+            nsp = lv.SelectedItems[0].Text;
+            brokerobj.InitGlb(nsp, ShowSys);
+        }
+        ///====================================================================
+        /// Блок кода отвечающий за обработку нажатия клавиш
+        ///====================================================================
+        #region Обработчики нажатия клавиш для панелей
+        ///====================================================================
+        /// <summary>
+        /// Нажатие клавиши на левой панели
+        /// </summary>
+        ///====================================================================
+        private void listViewLeft_KeyDown(object sender, KeyEventArgs e)
+        {
+            object[] args = null;
+            MethodInfo method = this.GetType().GetMethod(e.KeyCode.ToString() + "KeyDown");
+            if (null == method) return;
+            args = new object[] { listViewLeft, _leftbrocker, e };
+            method.Invoke(this, args); 
+
+        }
+        ///====================================================================
+        /// <summary>
+        /// Отпустили клавишу на левой панели
+        /// </summary>
+        ///====================================================================
+        private void listViewLeft_KeyUp(object sender, KeyEventArgs e)
+        {
+            object[] args = null;
+            MethodInfo method = this.GetType().GetMethod(e.KeyCode.ToString() + "KeyUp");
+            if (null == method) return;
+            args = new object[] { listViewLeft, _leftbrocker, e };
+            method.Invoke(this, args); 
+        }
+        ///====================================================================
+        /// <summary>
+        /// Нажатие клавиши на правой панели
+        /// </summary>
+        ///====================================================================
+        private void listViewRight_KeyDown(object sender, KeyEventArgs e)
+        {
+            object[] args = null;
+            MethodInfo method = this.GetType().GetMethod(e.KeyCode.ToString() + "KeyDown");
+            if (null == method) return;
+            args= new object[] {listViewRight, _rightbrocker ,e};
+            method.Invoke(this, args);            
+        }
+        ///====================================================================
+        /// <summary>
+        /// Отпустили клавишу на правой панели
+        /// </summary>
+        ///====================================================================
+        private void listViewRight_KeyUp(object sender, KeyEventArgs e)
+        {
+            object[] args = null;
+            MethodInfo method = this.GetType().GetMethod(e.KeyCode.ToString() + "KeyUp");
+            if (null == method) return;
+            args = new object[] { listViewRight, _rightbrocker, e };
+            method.Invoke(this, args);  
+        }
+        #endregion
+        ///====================================================================
+        /// 
+        ///====================================================================
+        #region Обработчики отдельно взятых клавиш
+        ///====================================================================
+        /// <summary>
+        /// Обработка нажатия на клавишу Enter
+        /// </summary>
+        ///====================================================================
+        public void ReturnKeyDown(ListView lv, Brocker brocker, KeyEventArgs evnt)
+        {
+            //MessageBox.Show("Enter Down");
+            initGlb(lv, brocker, _showsys);
+
+        }
+        ///====================================================================
+        /// <summary>
+        /// Обработка отпускания клавиши Enter
+        /// </summary>
+        ///====================================================================
+        public void ReturnKeyUp(ListView lv, Brocker brocker, KeyEventArgs evnt)
+        {
+            string glb;
+            lv.Items.Clear();
+            glb = brocker.NextGlobal("");
+            while (glb != "")
+            {
+                //cbNSP.Items.Add(glb);
+                lv.Items.Add(glb);
+                glb = brocker.GetNextNSP(glb);
+            }
+        }
+        ///====================================================================
+        #endregion
         ///====================================================================
     }
 }

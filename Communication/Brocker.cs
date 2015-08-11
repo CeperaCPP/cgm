@@ -81,10 +81,7 @@ namespace Communication
         public void InitNSP()
         {
             string cmd;
-            //if (_vism.ConnectionState == 0) return;
             ClearBUF();
-            //cmd = "f i=1:1:$ZU(90,0) I $ZU(90,2,0,i)'=\"\",##class(%SYS.Namespace).Exists($ZU(90,2,0,i)) S ^CacheTempNSP($J,$ZU(90,2,0,i))=\"\"";
-            //cmd = "DO ##class(%SYS.Namespace).ListAll(.result)";
             cmd = "set rs=##class(%ResultSet).%New()";
             _vism.Execute(cmd);
             cmd = "set rs.ClassName=\"%SYS.Namespace\"";
@@ -116,8 +113,8 @@ namespace Communication
         /// </summary>
         ///====================================================================
         public string GetNextNSP(string NSP = "")
-        {
-            _vism.P1 = "^CacheTempCGM($J)";
+        {// переписать на использование Next
+            _vism.P1 = dataBuf();
             _vism.P2 = NSP;
             string cmd = "S VALUE=$O(@P1@(P2))";
             _vism.Execute(cmd);
@@ -129,8 +126,8 @@ namespace Communication
         /// </summary>
         ///====================================================================
         public string GetPreviousNSP(string NSP = "")
-        {
-            _vism.P1 = "^CacheTempCGM($J)";
+        {// переписать на использование Next
+            _vism.P1 = dataBuf();
             _vism.P2 = NSP;
             string cmd = "S VALUE=$O(@P1@(P2),-1)";
             _vism.Execute(cmd);
@@ -147,7 +144,7 @@ namespace Communication
             ClearBUF();
             _vism.P1 = NSP;                 //NameSpace 
             _vism.P2 = "*";                 //Mask 
-            _vism.P3 = SysGlb;   //SystemGlobals
+            _vism.P3 = SysGlb;              //SystemGlobals
             //_vism.P4 = "";                  //UnavailableDatabases
             //_vism.P5 = "";                  //Index           
             cmd = "set rs=##class(%ResultSet).%New()";
@@ -172,7 +169,7 @@ namespace Communication
         {
             string res;
             string buf;
-            buf = "^CacheTempCGM($J)";
+            buf = dataBuf();
             res = Next(buf, Glb, "1", Type);
             return res;
         }
@@ -185,9 +182,18 @@ namespace Communication
         {
             string res;
             string buf;
-            buf = "^CacheTempCGM($J)";
+            buf = dataBuf();
             res = Next(buf, Glb, "-1", Type);
             return res;
+        }
+        ///====================================================================
+        /// <summary>
+        /// Имя буфера
+        /// </summary>
+        ///====================================================================
+        private string dataBuf()
+        {
+            return "^CacheTempCGM($J)";
         }
         ///====================================================================
         /// <summary>
