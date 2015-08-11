@@ -417,7 +417,8 @@
             this.splitContainer1.Panel2.Controls.Add(this.toolStripRight);
             this.splitContainer1.Size = new System.Drawing.Size(784, 513);
             this.splitContainer1.SplitterDistance = 390;
-            this.splitContainer1.TabIndex = 22;
+            this.splitContainer1.TabIndex = 0;
+            this.splitContainer1.TabStop = false;
             this.splitContainer1.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Paint);
             // 
             // listViewLeft
