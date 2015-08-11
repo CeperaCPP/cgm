@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-//using InterSystems.Data.CacheClient;
-//using InterSystems.Data.CacheTypes;
-//using SysGM;
 using VISMLib;
 
 namespace Communication
@@ -14,7 +11,42 @@ namespace Communication
     {
         private VisM _vism = null;
         private bool _connstatus = false;
-
+        private string _nsp = null;
+        private string _global = null;
+        private string _subscripts = null;
+        ///====================================================================
+        /// <summary>
+        /// Имя активной области
+        /// </summary>
+        ///====================================================================
+        public string NameSpace
+        {
+            get { return _nsp; }
+            set { this._nsp = value; }
+        }
+        public string Global
+        {
+            get { return _global; }
+            set { this._global = value; }
+        }
+        public string SubScripts
+        {
+            get { return _subscripts; }
+            set { this._subscripts = value; }
+        }
+        ///====================================================================
+        /// <summary>
+        /// Текущий путь (глобальная ссылка)
+        /// </summary>
+        ///====================================================================
+        public string GlobalPath
+        {
+            get {
+                if (null == _global) return _nsp;
+                else if (null == _subscripts) return "^|\"" + _nsp + "\"|" + _global;
+                else return "^|\"" + _nsp + "\"|" + _global + "(" + _subscripts + ")";
+            }            
+        }
         ///====================================================================
         /// <summary>
         /// Конструктор по-умолчанию
@@ -135,18 +167,21 @@ namespace Communication
         }
         ///====================================================================
         /// <summary>
-        /// Инициализация временного буфера глобалов для заданной области
+        /// Инициализация временного буфера со списком глобалов для заданной 
+        /// области
         /// </summary>
         ///====================================================================
         public void InitGlb(string NSP = "", string SysGlb = "0")
         {
             string cmd;           
             ClearBUF();
+            this.NameSpace = NSP;
             _vism.P1 = NSP;                 //NameSpace 
             _vism.P2 = "*";                 //Mask 
             _vism.P3 = SysGlb;              //SystemGlobals
             //_vism.P4 = "";                  //UnavailableDatabases
             //_vism.P5 = "";                  //Index           
+
             cmd = "set rs=##class(%ResultSet).%New()";
             _vism.Execute(cmd);
             cmd = "set rs.ClassName=\"%SYS.GlobalQuery\"";
@@ -155,9 +190,9 @@ namespace Communication
             _vism.Execute(cmd);
             cmd = "set sc=rs.Execute(P1,P2,P3)";
             _vism.Execute(cmd);
-            cmd = "while rs.%Next() { set nam=$P(rs.Data(\"Name\"),\"(\",1),^CacheTempCGM($J,nam)=\"\" }";
+            cmd = "while rs.%Next() { set nam=$p($p(rs.Data(\"Name\"),\"(\",1),\" \",1),^CacheTempCGM($J,nam)=\"\" }";
             _vism.Execute(cmd);
-            cmd = "k rs,sc";
+            cmd = "k rs,sc";           
             _vism.Execute(cmd);
         }
         ///====================================================================
@@ -251,6 +286,16 @@ namespace Communication
             cmd="s nod=$NA(@P0@(P1)) f  s nod=$Q(@nod,1) Q:nod=\"\"  I (P3=1!P3=3),$F(nod,P2) S VALUE=nod Q  I (P3=2!P3=3),$F($G(@nod),P2) S VALUE=nod Q";
 
             return "";
+        }
+        ///====================================================================
+        /// <summary>
+        /// Подъем вверх по дереву
+        /// </summary>
+        ///====================================================================
+
+        public void Up()
+        {
+            throw new NotImplementedException();
         }
         ///====================================================================
     }

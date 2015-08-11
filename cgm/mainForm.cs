@@ -50,12 +50,12 @@ namespace cpm
         private void readConfig()
         {
             // левая панель
-            _serverL = "labc";
+            _serverL = "win10";
             _portL = "1972";
             _userL = "_system";
             _passwordL = "SYS";
             // правая панель
-            _serverR = "labc-dev";
+            _serverR = "win10";
             _portR = "1972";
             _userR = "_system";
             _passwordR = "SYS";
@@ -162,10 +162,28 @@ namespace cpm
         ///====================================================================
         private void initGlb(ListView lv, Brocker brokerobj, string ShowSys="1")
         {
-            string nsp;
+            string val;
             if (lv.SelectedItems.Count == 0) return;
-            nsp = lv.SelectedItems[0].Text;
-            brokerobj.InitGlb(nsp, ShowSys);
+            val = lv.SelectedItems[0].Text;
+            if (".." == val) {
+                brokerobj.Up();
+            }
+            if (null==brokerobj.NameSpace)
+            {
+                brokerobj.InitGlb(val, ShowSys);
+            }
+            else
+            {
+                if (null==brokerobj.Global)
+                {
+                    brokerobj.Global = val;
+                }
+                else
+                {
+                    brokerobj.SubScripts = brokerobj.SubScripts + "," + val; // переработать
+                }
+            }
+
         }
         ///====================================================================
         /// Блок кода отвечающий за обработку нажатия клавиш
@@ -249,12 +267,13 @@ namespace cpm
         {
             string glb;
             lv.Items.Clear();
+            lv.Items.Add("..");
             glb = brocker.NextGlobal("");
             while (glb != "")
             {
                 //cbNSP.Items.Add(glb);
                 lv.Items.Add(glb);
-                glb = brocker.GetNextNSP(glb);
+                glb = brocker.NextGlobal(glb);
             }
         }
         ///====================================================================

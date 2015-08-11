@@ -75,6 +75,17 @@
             this.toolStripRight = new System.Windows.Forms.ToolStrip();
             this.toolStripRightServer = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripRightNSP = new System.Windows.Forms.ToolStripComboBox();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader10 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader11 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.mainmenu.SuspendLayout();
             this.toolStripBottom.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -422,16 +433,24 @@
             // 
             // listViewLeft
             // 
+            this.listViewLeft.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3,
+            this.columnHeader4,
+            this.columnHeader5,
+            this.columnHeader6});
             this.listViewLeft.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewLeft.FullRowSelect = true;
             this.listViewLeft.GridLines = true;
+            this.listViewLeft.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.listViewLeft.Location = new System.Drawing.Point(0, 25);
             this.listViewLeft.MultiSelect = false;
             this.listViewLeft.Name = "listViewLeft";
             this.listViewLeft.Size = new System.Drawing.Size(390, 488);
             this.listViewLeft.TabIndex = 1;
             this.listViewLeft.UseCompatibleStateImageBehavior = false;
-            this.listViewLeft.View = System.Windows.Forms.View.List;
+            this.listViewLeft.View = System.Windows.Forms.View.Details;
             this.listViewLeft.DoubleClick += new System.EventHandler(this.listViewLeft_Click);
             this.listViewLeft.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewLeft_KeyDown);
             this.listViewLeft.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listViewLeft_KeyUp);
@@ -460,7 +479,12 @@
             // 
             // listViewRight
             // 
-            this.listViewRight.AllowDrop = true;
+            this.listViewRight.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader7,
+            this.columnHeader8,
+            this.columnHeader9,
+            this.columnHeader10,
+            this.columnHeader11});
             this.listViewRight.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewRight.FullRowSelect = true;
             this.listViewRight.GridLines = true;
@@ -470,7 +494,7 @@
             this.listViewRight.Size = new System.Drawing.Size(390, 488);
             this.listViewRight.TabIndex = 2;
             this.listViewRight.UseCompatibleStateImageBehavior = false;
-            this.listViewRight.View = System.Windows.Forms.View.List;
+            this.listViewRight.View = System.Windows.Forms.View.Details;
             this.listViewRight.DoubleClick += new System.EventHandler(this.listViewRight_Click);
             this.listViewRight.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewRight_KeyDown);
             this.listViewRight.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listViewRight_KeyUp);
@@ -578,6 +602,17 @@
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem findToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.ColumnHeader columnHeader5;
+        private System.Windows.Forms.ColumnHeader columnHeader6;
+        private System.Windows.Forms.ColumnHeader columnHeader7;
+        private System.Windows.Forms.ColumnHeader columnHeader8;
+        private System.Windows.Forms.ColumnHeader columnHeader9;
+        private System.Windows.Forms.ColumnHeader columnHeader10;
+        private System.Windows.Forms.ColumnHeader columnHeader11;
     }
 }
 
