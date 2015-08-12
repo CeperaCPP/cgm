@@ -14,8 +14,8 @@ namespace cpm
 {
     public partial class mainForm : Form
     {
-        private Brocker _leftbrocker = null;
-        private Brocker _rightbrocker = null;
+        private Broker _leftbrocker = null;
+        private Broker _rightbrocker = null;
 
         //private string _serverL = "127.0.0.1" ; //"WIN10";
         private string _serverL;
@@ -37,8 +37,8 @@ namespace cpm
         public mainForm()
         {
             InitializeComponent();
-            _leftbrocker = new Brocker();
-            _rightbrocker = new Brocker();
+            _leftbrocker = new Broker();
+            _rightbrocker = new Broker();
             readConfig();
         }
         ///====================================================================
@@ -50,12 +50,12 @@ namespace cpm
         private void readConfig()
         {
             // левая панель
-            _serverL = "win10";
+            _serverL = "labc";
             _portL = "1972";
             _userL = "_system";
             _passwordL = "SYS";
             // правая панель
-            _serverR = "win10";
+            _serverR = "localhost";
             _portR = "1972";
             _userR = "_system";
             _passwordR = "SYS";
@@ -125,7 +125,7 @@ namespace cpm
         /// Инициализация панели
         /// </summary>
         ///====================================================================
-        private void PanelInit(Brocker brokerobj,ToolStripComboBox cbNSP, ListView lstview)
+        private void PanelInit(Broker brokerobj,ToolStripComboBox cbNSP, ListView lstview)
         {
             string nsp = brokerobj.GetNextNSP("");
             while (nsp != "")
@@ -157,10 +157,10 @@ namespace cpm
         }
         ///====================================================================
         /// <summary>
-        /// Клик по элементу в правой панели
+        /// Инициализация глобала
         /// </summary>
         ///====================================================================
-        private void initGlb(ListView lv, Brocker brokerobj, string ShowSys="1")
+        private void initGlb(ListView lv, Broker brokerobj, string ShowSys="1")
         {
             string val;
             if (lv.SelectedItems.Count == 0) return;
@@ -252,7 +252,7 @@ namespace cpm
         /// Обработка нажатия на клавишу Enter
         /// </summary>
         ///====================================================================
-        public void ReturnKeyDown(ListView lv, Brocker brocker, KeyEventArgs evnt)
+        public void ReturnKeyDown(ListView lv, Broker brocker, KeyEventArgs evnt)
         {
             //MessageBox.Show("Enter Down");
             initGlb(lv, brocker, _showsys);
@@ -263,17 +263,17 @@ namespace cpm
         /// Обработка отпускания клавиши Enter
         /// </summary>
         ///====================================================================
-        public void ReturnKeyUp(ListView lv, Brocker brocker, KeyEventArgs evnt)
+        public void ReturnKeyUp(ListView lv, Broker broker, KeyEventArgs evnt)
         {
             string glb;
             lv.Items.Clear();
-            lv.Items.Add("..");
-            glb = brocker.NextGlobal("");
+            if (null != broker.NameSpace) lv.Items.Add("..");
+            glb = broker.NextGlobal("");
             while (glb != "")
             {
                 //cbNSP.Items.Add(glb);
                 lv.Items.Add(glb);
-                glb = brocker.NextGlobal(glb);
+                glb = broker.NextGlobal(glb);
             }
         }
         ///====================================================================

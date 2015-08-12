@@ -7,7 +7,7 @@ using VISMLib;
 
 namespace Communication
 {
-    public class Brocker
+    public class Broker
     {
         private VisM _vism = null;
         private bool _connstatus = false;
@@ -52,7 +52,7 @@ namespace Communication
         /// Конструктор по-умолчанию
         /// </summary>
         ///====================================================================
-        public Brocker()
+        public Broker()
         {
             _vism = new VisM();
         }
@@ -61,7 +61,7 @@ namespace Communication
         /// Деструктор
         /// </summary>
         ///====================================================================
-        ~Brocker()
+        ~Broker()
         {
 
         }
