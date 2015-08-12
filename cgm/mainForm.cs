@@ -127,7 +127,7 @@ namespace cpm
         ///====================================================================
         private void PanelInit(Broker brokerobj,ToolStripComboBox cbNSP, ListView lstview)
         {
-            string nsp = brokerobj.GetNextNSP("");
+            string nsp = brokerobj.NextGlobal("");
             while (nsp != "")
             {                
                 cbNSP.Items.Add(nsp);
@@ -143,7 +143,7 @@ namespace cpm
         private void listViewLeft_Click(object sender, EventArgs e)
         {
             ListView lv = (ListView)sender;
-            initGlb(lv, _leftbrocker, _showsys);
+            initDataBuf(lv, _leftbrocker, _showsys);
         }
         ///====================================================================
         /// <summary>
@@ -153,35 +153,24 @@ namespace cpm
         private void listViewRight_Click(object sender, EventArgs e)
         {
             ListView lv = (ListView)sender;
-            initGlb(lv, _rightbrocker, _showsys);
+            initDataBuf(lv, _rightbrocker, _showsys);
         }
         ///====================================================================
         /// <summary>
-        /// Инициализация глобала
+        /// Инициализация буфера данных
         /// </summary>
         ///====================================================================
-        private void initGlb(ListView lv, Broker brokerobj, string ShowSys="1")
+        private void initDataBuf(ListView lv, Broker brokerobj, string ShowSys = "1")
         {
             string val;
             if (lv.SelectedItems.Count == 0) return;
             val = lv.SelectedItems[0].Text;
             if (".." == val) {
-                brokerobj.Up();
-            }
-            if (null==brokerobj.NameSpace)
-            {
-                brokerobj.InitGlb(val, ShowSys);
+                brokerobj.Up(ShowSys);
             }
             else
             {
-                if (null==brokerobj.Global)
-                {
-                    brokerobj.Global = val;
-                }
-                else
-                {
-                    brokerobj.SubScripts = brokerobj.SubScripts + "," + val; // переработать
-                }
+                brokerobj.Down(val);
             }
 
         }
@@ -255,7 +244,7 @@ namespace cpm
         public void ReturnKeyDown(ListView lv, Broker brocker, KeyEventArgs evnt)
         {
             //MessageBox.Show("Enter Down");
-            initGlb(lv, brocker, _showsys);
+            initDataBuf(lv, brocker, _showsys);
 
         }
         ///====================================================================
@@ -271,7 +260,7 @@ namespace cpm
         #endregion
         ///====================================================================
         /// <summary>
-        /// Движение в глубь (к листьям) глобала
+        /// Перечитать содержимое ListView
         /// </summary>
         ///====================================================================
         public void ReLoad(ListView lv, Broker broker)
@@ -286,21 +275,6 @@ namespace cpm
                 lv.Items.Add(glb);
                 glb = broker.NextGlobal(glb);
             }
-        }///====================================================================
-        /// <summary>
-        /// Движение в глубь (к листьям) глобала
-        /// </summary>
-        ///====================================================================
-        public void Down(ListView lv, Broker broker)
-        {
-
-        }
-        ///====================================================================
-        /// Движение вверх (к корню) глобала
-        ///====================================================================
-        public void Up(ListView lv, Broker broker)
-        {
-
         }
         ///====================================================================
     }

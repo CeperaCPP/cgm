@@ -14,6 +14,7 @@ namespace Communication
         private string _nsp = null;
         private string _global = null;
         private string _subscripts = null;
+        private Stack<string> _stack;
         ///====================================================================
         /// <summary>
         /// Имя активной области
@@ -55,6 +56,7 @@ namespace Communication
         public Broker()
         {
             _vism = new VisM();
+            _stack = new Stack<string>();
         }
         ///====================================================================
         /// <summary>
@@ -106,6 +108,10 @@ namespace Communication
 
         }
         ///====================================================================
+        /// 
+        ///====================================================================
+        #region Инициализация буфера данными
+        ///====================================================================
         /// <summary>
         /// Инициализация списка областей БД во временный глобал
         /// </summary>
@@ -114,6 +120,10 @@ namespace Communication
         {
             string cmd;
             ClearBUF();
+            _nsp = null;
+            _global = null;
+            _subscripts = null;
+            _stack.Clear();
             cmd = "set rs=##class(%ResultSet).%New()";
             _vism.Execute(cmd);
             cmd = "set rs.ClassName=\"%SYS.Namespace\"";
@@ -130,25 +140,17 @@ namespace Communication
         }
         ///====================================================================
         /// <summary>
-        /// Очистка буфера
-        /// </summary>
-        ///====================================================================
-        public void ClearBUF()
-        {
-            string cmd;
-            cmd = "kill ^CacheTempCGM($J)";
-            _vism.Execute(cmd);
-        }
-        ///====================================================================
-        /// <summary>
         /// Инициализация временного буфера со списком глобалов для заданной 
         /// области
         /// </summary>
         ///====================================================================
         public void InitGlb(string NSP = "", string SysGlb = "0")
         {
-            string cmd;           
+            string cmd;
             ClearBUF();
+            _global = null;
+            _subscripts = null;
+            _stack.Clear();
             this.NameSpace = NSP;
             _vism.P1 = NSP;                 //NameSpace 
             _vism.P2 = "*";                 //Mask 
@@ -166,9 +168,31 @@ namespace Communication
             _vism.Execute(cmd);
             cmd = "while rs.%Next() { set nam=$p($p(rs.Data(\"Name\"),\"(\",1),\" \",1),^CacheTempCGM($J,nam)=\"\" }";
             _vism.Execute(cmd);
-            cmd = "k rs,sc";           
+            cmd = "k rs,sc";
             _vism.Execute(cmd);
         }
+        ///====================================================================
+        /// <summary>
+        /// Инициализация буфера узла дерева
+        /// </summary>
+        ///====================================================================
+        private void InitSub()
+        {
+            throw new NotImplementedException();
+        }
+        ///====================================================================
+        /// <summary>
+        /// Очистка буфера
+        /// </summary>
+        ///====================================================================
+        public void ClearBUF()
+        {
+            string cmd;
+            cmd = "kill ^CacheTempCGM($J)";
+            _vism.Execute(cmd);
+        }
+        ///====================================================================
+        #endregion
         ///====================================================================
         /// <summary>
         /// Следующий глобал из буфера
@@ -263,13 +287,85 @@ namespace Communication
         }
         ///====================================================================
         /// <summary>
-        /// Подъем вверх по дереву
+        /// Движение вверх (к корню) глобала
         /// </summary>
         ///====================================================================
-
-        public void Up()
+        public void Up(string ShowSys = "1")
         {
-            throw new NotImplementedException();
+            if (null == this.NameSpace)
+            {
+                InitNSP();
+            }
+            else
+            {
+                if (null == this.Global)
+                {
+                    InitNSP();
+
+                }
+                else
+                {
+                    _subscripts = getSubScript();
+                    if (null == _subscripts)
+                    {
+                        InitGlb(_nsp, ShowSys);
+                    }
+                    else
+                    {
+                        _subscripts = getSubScript(); //this.SubScripts + "," + item; // переработать
+                    }
+                }
+            }
+        }
+        ///====================================================================
+        /// <summary>
+        /// Движение в глубь (к листьям) глобала
+        /// </summary>
+        ///====================================================================
+        public void Down(string item="", string ShowSys = "1")
+        {
+            if (""==item) return;
+            if (null == this.NameSpace)
+            {
+                InitGlb(item, ShowSys);
+            }
+            else
+            {
+                if (null == this.Global)
+                {
+                    this.Global = item;
+                }
+                else
+                {
+                    this.SubScripts = getSubScript(item); //this.SubScripts + "," + item; 
+                    InitSub();
+                }
+            }
+        }
+        ///====================================================================
+        /// <summary>
+        /// вернуть строку индексов
+        /// </summary>
+        ///====================================================================
+        private string getSubScript(string item="")
+        {
+            string result= null;
+            if (_stack.Count > 0)
+            {
+                if ("" == item)
+                {
+                    _stack.Pop();
+                }
+                else
+                {
+                    _stack.Push(item);
+                }
+                if (_stack.Count > 0)
+                {
+                    result = String.Join("\",\"", _stack.ToArray());
+                }
+            }
+            return result;
         }
         ///====================================================================
     }
