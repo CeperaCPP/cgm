@@ -50,12 +50,12 @@ namespace cpm
         private void readConfig()
         {
             // левая панель
-            _serverL = "labc";
+            _serverL = "win10";
             _portL = "1972";
             _userL = "_system";
             _passwordL = "SYS";
             // правая панель
-            _serverR = "localhost";
+            _serverR = "win10";
             _portR = "1972";
             _userR = "_system";
             _passwordR = "SYS";
@@ -132,7 +132,7 @@ namespace cpm
             {                
                 cbNSP.Items.Add(nsp);
                 lstview.Items.Add(nsp);
-                nsp = brokerobj.GetNextNSP(nsp);
+                nsp = brokerobj.NextGlobal(nsp);
             }
         }
         ///====================================================================
@@ -265,6 +265,17 @@ namespace cpm
         ///====================================================================
         public void ReturnKeyUp(ListView lv, Broker broker, KeyEventArgs evnt)
         {
+            ReLoad(lv, broker);
+        }
+        ///====================================================================
+        #endregion
+        ///====================================================================
+        /// <summary>
+        /// Движение в глубь (к листьям) глобала
+        /// </summary>
+        ///====================================================================
+        public void ReLoad(ListView lv, Broker broker)
+        {
             string glb;
             lv.Items.Clear();
             if (null != broker.NameSpace) lv.Items.Add("..");
@@ -275,9 +286,22 @@ namespace cpm
                 lv.Items.Add(glb);
                 glb = broker.NextGlobal(glb);
             }
+        }///====================================================================
+        /// <summary>
+        /// Движение в глубь (к листьям) глобала
+        /// </summary>
+        ///====================================================================
+        public void Down(ListView lv, Broker broker)
+        {
+
         }
         ///====================================================================
-        #endregion
+        /// Движение вверх (к корню) глобала
+        ///====================================================================
+        public void Up(ListView lv, Broker broker)
+        {
+
+        }
         ///====================================================================
     }
 }
