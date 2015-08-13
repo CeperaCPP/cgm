@@ -50,12 +50,12 @@ namespace cpm
         private void readConfig()
         {
             // левая панель
-            _serverL = "win10";
+            _serverL = "labc";
             _portL = "1972";
             _userL = "_system";
             _passwordL = "SYS";
             // правая панель
-            _serverR = "win10";
+            _serverR = "localhost";
             _portR = "1972";
             _userR = "_system";
             _passwordR = "SYS";

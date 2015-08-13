@@ -9,6 +9,10 @@ namespace Communication
 {
     public class Broker
     {
+        ///====================================================================
+        /// Описание полей класса
+        ///====================================================================
+        #region Поля
         private VisM _vism = null;
         private bool _connstatus = false;
         private string _nsp = null;
@@ -35,6 +39,7 @@ namespace Communication
             get { return _subscripts; }
             set { this._subscripts = value; }
         }
+        #endregion
         ///====================================================================
         /// <summary>
         /// Текущий путь (глобальная ссылка)
@@ -149,7 +154,7 @@ namespace Communication
             string cmd;
             ClearBUF();
             _global = null;
-            _subscripts = null;
+             _subscripts = null;
             _stack.Clear();
             this.NameSpace = NSP;
             _vism.P1 = NSP;                 //NameSpace 
@@ -176,10 +181,41 @@ namespace Communication
         /// Инициализация буфера узла дерева
         /// </summary>
         ///====================================================================
-        private void InitSub()
+        private void InitSub(string GLB = "")
         {
+            string cmd;
+            ClearBUF();
+            //_subscripts = null;
+            //_stack.Clear();
+
             throw new NotImplementedException();
         }
+        ///====================================================================
+        /// <summary>
+        /// вернуть строку индексов
+        /// </summary>
+        ///====================================================================
+        private string getSubScript(string item = "")
+        {
+            string result = null;
+            if (_stack.Count > 0)
+            {
+                if ("" == item)
+                {
+                    _stack.Pop();
+                }
+                else
+                {
+                    _stack.Push(item);
+                }
+                if (_stack.Count > 0)
+                {
+                    result = String.Join("\",\"", _stack.ToArray());
+                }
+            }
+            return result;
+        }
+        ///====================================================================
         ///====================================================================
         /// <summary>
         /// Очистка буфера
@@ -312,7 +348,8 @@ namespace Communication
                     }
                     else
                     {
-                        _subscripts = getSubScript(); //this.SubScripts + "," + item; // переработать
+                        //_subscripts = getSubScript(); //this.SubScripts + "," + item; // переработать
+                        InitSub(_global);
                     }
                 }
             }
@@ -338,35 +375,9 @@ namespace Communication
                 else
                 {
                     this.SubScripts = getSubScript(item); //this.SubScripts + "," + item; 
-                    InitSub();
+                    InitSub(item);
                 }
             }
         }
-        ///====================================================================
-        /// <summary>
-        /// вернуть строку индексов
-        /// </summary>
-        ///====================================================================
-        private string getSubScript(string item="")
-        {
-            string result= null;
-            if (_stack.Count > 0)
-            {
-                if ("" == item)
-                {
-                    _stack.Pop();
-                }
-                else
-                {
-                    _stack.Push(item);
-                }
-                if (_stack.Count > 0)
-                {
-                    result = String.Join("\",\"", _stack.ToArray());
-                }
-            }
-            return result;
-        }
-        ///====================================================================
     }
 }
