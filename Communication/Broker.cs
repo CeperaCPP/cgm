@@ -191,15 +191,29 @@ namespace Communication
             _vism.P0 = _nsp;
             _vism.P1 = _global;
             _vism.P2 = _subscripts;
+            _vism.P3="";
+            if (null == _subscripts)
+            {
+                cmd = "S P3=$NA(^|\"" + _nsp + "\"|" + _global + ")";
+                _vism.Execute(cmd);
+            }
+            else
+            {
+                _vism.P3 = _vism.P2;
+            }
+            //if (null != _subscripts)
+            //{
+                //cmd = "S P3=$NA(@P3@(" + _subscripts + "))";
 
-            cmd = "S P3=$NA(\"^|\"_P0_\"|\"P1)";
+                //_vism.Execute(cmd);
+                //_vism.P4 = cmd;
+                //_vism.Execute("s ^tmpP=P4");
+            //}
+            cmd = "S nod=\"\" F  S nod=$O(@P3@(nod)) Q:nod=\"\"  S ^CacheTempCGM($J,nod)=\"\"";
+            //cmd = "S nod=P3 F  S nod=$O(@nod) Q:nod=\"\"  S ^CacheTempCGM($J,nod)=\"\"";
             _vism.Execute(cmd);
-            cmd = "S P3=$NA(@P3@(P2))";
+            cmd = "k nod";
             _vism.Execute(cmd);
-            //_subscripts = null;
-            //_stack.Clear();
-
-            //throw new NotImplementedException();
         }
         ///====================================================================
         /// <summary>
@@ -208,12 +222,42 @@ namespace Communication
         ///====================================================================
         private string getSubScript()
         {
-            string result = null;
+            string cmd;
+            string item = null;
+            cmd = "S P2=$NA(^|\"" + _nsp + "\"|" + _global + ")";
+            _vism.Execute(cmd);
+
+            Stack<string> local = null;
             if (_stack.Count > 0)
             {
-                result = String.Join("\",\"", _stack.ToArray());
+                local = new Stack<string>(_stack);
+                while (local.Count > 0)
+                {
+                    item = local.Pop(); //.Replace("\"", "\"\"");                    // замена одной двойной кавычки на две
+                    _vism.P4 = item;
+                    cmd = "S P2=$NA(@P2@(P4))";
+                    _vism.Execute(cmd);
+                }
+            }
+            return _vism.P2;
+            /*
+
+            string result = null;
+            string item = null;
+            Stack<string> local = null;
+            if (_stack.Count > 0)
+            {
+                local = new Stack<string>(_stack);                
+                while (local.Count>0)
+                {
+                    item = local.Pop().Replace("\"","\"\"");                    // замена одной двойной кавычки на две
+                    if (null == result) result = '\u0022' + item + '\u0022';
+                    else result = result + "," + '\u0022' + item + '\u0022';    // окружить строку двойными кавычками
+                }
+                //result = '\u0022' + result + '\u0022';
             }
             return result;
+             */
         }
         ///====================================================================
         ///====================================================================
