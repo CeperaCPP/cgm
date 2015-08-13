@@ -181,37 +181,37 @@ namespace Communication
         /// Инициализация буфера узла дерева
         /// </summary>
         ///====================================================================
-        private void InitSub(string GLB = "")
+        private void InitSub(string Glb = "",string Node = "")
         {
             string cmd;
             ClearBUF();
+            _global = Glb;
+            _subscripts = getSubScript();
+
+            _vism.P0 = _nsp;
+            _vism.P1 = _global;
+            _vism.P2 = _subscripts;
+
+            cmd = "S P3=$NA(\"^|\"_P0_\"|\"P1)";
+            _vism.Execute(cmd);
+            cmd = "S P3=$NA(@P3@(P2))";
+            _vism.Execute(cmd);
             //_subscripts = null;
             //_stack.Clear();
 
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
         ///====================================================================
         /// <summary>
         /// вернуть строку индексов
         /// </summary>
         ///====================================================================
-        private string getSubScript(string item = "")
+        private string getSubScript()
         {
             string result = null;
             if (_stack.Count > 0)
             {
-                if ("" == item)
-                {
-                    _stack.Pop();
-                }
-                else
-                {
-                    _stack.Push(item);
-                }
-                if (_stack.Count > 0)
-                {
-                    result = String.Join("\",\"", _stack.ToArray());
-                }
+                result = String.Join("\",\"", _stack.ToArray());
             }
             return result;
         }
@@ -234,12 +234,15 @@ namespace Communication
         /// Следующий глобал из буфера
         /// </summary>
         ///====================================================================
-        public string NextGlobal(string Glb = "", int Type = 1)
+        public string NextGlobal(string Glb = "", bool Type = true, bool Revers = false)
         {
             string res;
             string buf;
+            string order;
+            order = "1";
+            if (Revers) order = "-1";
             buf = dataBuf();
-            res = Next(buf, Glb, "1", Type);
+            res = Next(buf, Glb, order, Type);
             return res;
         }
         ///====================================================================
@@ -247,12 +250,15 @@ namespace Communication
         /// Предыдущий глобал из буфера
         /// </summary>
         ///====================================================================
-        public string PreviousGlobal(string Glb = "", int Type = 1)
+        public string PreviousGlobal(string Glb = "", bool Type = true, bool Revers = false)
         {
             string res;
             string buf;
+            string order;
+            order = "-1";
+            if (Revers) order = "1";
             buf = dataBuf();
-            res = Next(buf, Glb, "-1", Type);
+            res = Next(buf, Glb, order, Type);
             return res;
         }
         ///====================================================================
@@ -268,16 +274,16 @@ namespace Communication
         /// <summary>
         /// Следующий произвольный глобал
         /// Order - порядок следования "1" -прямой, "-1" -обратный
-        /// Type - тип представления (1 - послойный, иначе - в видет таблицы)
+        /// Type - тип представления (true - послойный, false - в видет таблицы)
         /// </summary>
         ///====================================================================
-        public string Next(string Glb = "",string Nod="",string Order = "1",int Type = 1)
+        public string Next(string Glb = "", string Nod = "", string Order = "1", bool Type = true)
         {
             string cmd;
             string node;
             _vism.P0 = Glb;
             _vism.P1 = Nod;
-            if (Type == 1)
+            if (Type)
             {
                 cmd = "S VALUE=$O(@P0@(P1),"+Order+")";
             }
@@ -341,14 +347,14 @@ namespace Communication
                 }
                 else
                 {
-                    _subscripts = getSubScript();
-                    if (null == _subscripts)
+                    if (_stack.Count == 0)
                     {
                         InitGlb(_nsp, ShowSys);
                     }
                     else
                     {
-                        //_subscripts = getSubScript(); //this.SubScripts + "," + item; // переработать
+                        _stack.Pop();
+                        //_subscripts = getSubScript();
                         InitSub(_global);
                     }
                 }
@@ -370,14 +376,17 @@ namespace Communication
             {
                 if (null == this.Global)
                 {
-                    this.Global = item;
+                    //_global = item;
+                    InitSub(item,"");
                 }
                 else
                 {
-                    this.SubScripts = getSubScript(item); //this.SubScripts + "," + item; 
-                    InitSub(item);
+                    _stack.Push(item);
+                    //_subscripts = getSubScript(item);
+                    InitSub(_global,item);
                 }
             }
         }
+        ///====================================================================
     }
 }
