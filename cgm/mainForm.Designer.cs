@@ -68,24 +68,24 @@
             this.toolStripButtonF12 = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.listViewLeft = new System.Windows.Forms.ListView();
-            this.toolStripLeft = new System.Windows.Forms.ToolStrip();
-            this.toolStripLeftServer = new System.Windows.Forms.ToolStripComboBox();
-            this.toolStripLeftNSP = new System.Windows.Forms.ToolStripComboBox();
-            this.listViewRight = new System.Windows.Forms.ListView();
-            this.toolStripRight = new System.Windows.Forms.ToolStrip();
-            this.toolStripRightServer = new System.Windows.Forms.ToolStripComboBox();
-            this.toolStripRightNSP = new System.Windows.Forms.ToolStripComboBox();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.toolStripLeft = new System.Windows.Forms.ToolStrip();
+            this.toolStripLeftServer = new System.Windows.Forms.ToolStripComboBox();
+            this.toolStripLeftNSP = new System.Windows.Forms.ToolStripComboBox();
+            this.listViewRight = new System.Windows.Forms.ListView();
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader10 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader11 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.toolStripRight = new System.Windows.Forms.ToolStrip();
+            this.toolStripRightServer = new System.Windows.Forms.ToolStripComboBox();
+            this.toolStripRightNSP = new System.Windows.Forms.ToolStripComboBox();
             this.mainmenu.SuspendLayout();
             this.toolStripBottom.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -454,6 +454,7 @@
             this.listViewLeft.DoubleClick += new System.EventHandler(this.listViewLeft_Click);
             this.listViewLeft.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewLeft_KeyDown);
             this.listViewLeft.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listViewLeft_KeyUp);
+            this.listViewLeft.Resize += new System.EventHandler(this.listView_SizeChanged);
             // 
             // toolStripLeft
             // 
@@ -498,6 +499,7 @@
             this.listViewRight.DoubleClick += new System.EventHandler(this.listViewRight_Click);
             this.listViewRight.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewRight_KeyDown);
             this.listViewRight.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listViewRight_KeyUp);
+            this.listViewRight.Resize += new System.EventHandler(this.listView_SizeChanged);
             // 
             // toolStripRight
             // 

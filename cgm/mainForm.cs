@@ -50,12 +50,12 @@ namespace cpm
         private void readConfig()
         {
             // левая панель
-            _serverL = "win10";
+            _serverL = "localhost";
             _portL = "1972";
             _userL = "_system";
             _passwordL = "SYS";
             // правая панель
-            _serverR = "win10";
+            _serverR = "localhost";
             _portR = "1972";
             _userR = "_system";
             _passwordR = "SYS";
@@ -98,27 +98,16 @@ namespace cpm
         ///====================================================================
         private void mainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_leftbrocker.getConnectionStatus())
+            if (_leftbrocker.ConnectionStatus)
             {
                 _leftbrocker.ClearBUF();
                 _leftbrocker.Disconnect();
             }
-            if (_rightbrocker.getConnectionStatus())
+            if (_rightbrocker.ConnectionStatus)
             {
                 _rightbrocker.ClearBUF();
                 _rightbrocker.Disconnect();
             }
-        }
-        ///====================================================================
-        /// <summary>
-        /// Обработчик события отрисовки контнейнера
-        /// </summary>
-        ///====================================================================
-        private void splitContainer1_Paint(object sender, PaintEventArgs e)
-        {            
-            //PanelInit(_leftbrocker);
-            //PanelInit(_rightbrocker);
-            
         }
         ///====================================================================
         /// <summary>
@@ -144,6 +133,7 @@ namespace cpm
         {
             ListView lv = (ListView)sender;
             initDataBuf(lv, _leftbrocker, _showsys);
+            ReLoad(lv, _leftbrocker);
         }
         ///====================================================================
         /// <summary>
@@ -154,6 +144,7 @@ namespace cpm
         {
             ListView lv = (ListView)sender;
             initDataBuf(lv, _rightbrocker, _showsys);
+            ReLoad(lv, _rightbrocker);
         }
         ///====================================================================
         /// <summary>
@@ -274,6 +265,28 @@ namespace cpm
                 //cbNSP.Items.Add(glb);
                 lv.Items.Add(glb);
                 glb = broker.NextGlobal(glb);
+            }
+            //lv.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+        }
+        ///====================================================================
+        /// <summary>
+        /// Автоматическое изменение размера колонок с сохранение пропроций
+        /// (метод для левой и правой панели)
+        /// </summary>
+        ///====================================================================
+        private void listView_SizeChanged(object sender, EventArgs e)
+        {
+            int len = 0;
+            float prc;
+            ListView lv = (ListView)sender;
+            foreach (ColumnHeader header in lv.Columns)
+            {
+                len += header.Width;
+            }
+            foreach (ColumnHeader header in lv.Columns)
+            {
+                prc = (float)header.Width/len;
+                header.Width = (int) (lv.Width * prc);
             }
         }
         ///====================================================================
