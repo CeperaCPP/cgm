@@ -16,6 +16,9 @@ namespace cpm
     {
         private Broker _leftbrocker = null;
         private Broker _rightbrocker = null;
+        private Dictionary<ListView, Broker> brokers = null;
+        private Dictionary<ListView, ToolStripComboBox> cbnsp = null;
+        private Dictionary<ListView, ToolStripComboBox> cbservers = null;
 
         //private string _serverL = "127.0.0.1" ; //"WIN10";
         private string _serverL;
@@ -37,9 +40,27 @@ namespace cpm
         public mainForm()
         {
             InitializeComponent();
+            MyInitializeComponent();
+            readConfig();
+        }
+
+        private void MyInitializeComponent()
+        {
+            brokers = new Dictionary<ListView, Broker>();
+            cbnsp = new Dictionary<ListView, ToolStripComboBox>();
+            cbservers = new Dictionary<ListView, ToolStripComboBox>();
             _leftbrocker = new Broker();
             _rightbrocker = new Broker();
-            readConfig();
+
+            brokers.Add(listViewLeft, _leftbrocker);
+            brokers.Add(listViewRight, _rightbrocker);
+
+            cbnsp.Add(listViewLeft, toolStripLeftNSP);
+            cbnsp.Add(listViewRight, toolStripRightNSP);
+
+            cbservers.Add(listViewLeft, toolStripLeftServer);
+            cbservers.Add(listViewRight, toolStripRightServer);
+
         }
         ///====================================================================
         /// <summary>
@@ -50,7 +71,7 @@ namespace cpm
         private void readConfig()
         {
             // левая панель
-            _serverL = "localhost";
+            _serverL = "labc";
             _portL = "1972";
             _userL = "_system";
             _passwordL = "SYS";
@@ -79,6 +100,20 @@ namespace cpm
         ///====================================================================
         private void mainForm_Load(object sender, EventArgs e)
         {
+            
+            foreach (KeyValuePair<ListView,Broker> pair in brokers) 
+            {
+                if (pair.Value.Connect(_serverL, _portL, _userL, _passwordL))
+                {
+                    //string cbname=(string)pair.Key.Tag;
+                    //MemberInfo cmb = this.GetType().GetMember(cbname);
+                    //ToolStripComboBox test = (ToolStripComboBox)GetType().GetProperty("toolStripLeftNSP").GetValue(this);
+                    pair.Value.InitNSP();
+                    PanelInit(pair.Value, toolStripLeftNSP, pair.Key);
+                }
+            }
+            
+            /*
             //MessageBox.Show("hello");
             if (_leftbrocker.Connect(_serverL, _portL, _userL, _passwordL))
             {
@@ -90,6 +125,7 @@ namespace cpm
                 _rightbrocker.InitNSP();
                 PanelInit(_rightbrocker, toolStripRightNSP, listViewRight);
             }
+            */
         }
         ///====================================================================
         /// <summary>
@@ -123,6 +159,7 @@ namespace cpm
                 lstview.Items.Add(nsp);
                 nsp = brokerobj.NextGlobal(nsp);
             }
+            listView_SizeChanged(lstview);
         }
         ///====================================================================
         /// <summary>
@@ -274,19 +311,24 @@ namespace cpm
         /// (метод для левой и правой панели)
         /// </summary>
         ///====================================================================
-        private void listView_SizeChanged(object sender, EventArgs e)
+        private void listView_SizeChanged(object sender, EventArgs e = null)
         {
-            int len = 0;
-            float prc;
+            //return;        
+            double prc;
+            bool first = true;
             ListView lv = (ListView)sender;
+            prc = 0.4 / (lv.Columns.Count - 1);
             foreach (ColumnHeader header in lv.Columns)
             {
-                len += header.Width;
-            }
-            foreach (ColumnHeader header in lv.Columns)
-            {
-                prc = (float)header.Width/len;
-                header.Width = (int) (lv.Width * prc);
+                if (first)
+                {
+                    header.Width = (int)(lv.Width * 0.6);
+                    first = !first;
+                }
+                else
+                {
+                    header.Width = (int)(lv.Width * prc);
+                }
             }
         }
         ///====================================================================
