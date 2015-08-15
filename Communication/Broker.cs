@@ -17,7 +17,12 @@ namespace Communication
         private bool _connstatus = false;
         private string _nsp = null;
         private string _global = null;
+        private string _server = null;
+        private string _port = null;
+        private string _user = null;
+        private string _pass = null;
         private Stack<string> _subscripts;
+        private Stack<string> _levels;
         ///====================================================================
         /// <summary>
         /// Имя активной области
@@ -33,6 +38,30 @@ namespace Communication
         {
             get { return _global; }
             set { this._global = value; }
+        }
+        ///====================================================================
+        public string Server
+        {
+            get { return _server; }
+            set { this._server = value; }
+        }
+        ///====================================================================
+        public string Port
+        {
+            get { return _port; }
+            set { this._port = value; }
+        }
+        ///====================================================================
+        public string User
+        {
+            get { return _user; }
+            set { this._user = value; }
+        }
+        ///====================================================================
+        public string Password
+        {
+            get { return _pass; }
+            set { this._pass = value; }
         }
         ///====================================================================
         public bool ConnectionStatus
@@ -54,6 +83,7 @@ namespace Communication
         {
             _vism = new VisM();
             _subscripts = new Stack<string>();
+            _levels = new Stack<string>();
         }
         ///====================================================================
         /// <summary>
@@ -72,6 +102,10 @@ namespace Communication
         public bool Connect(string Server, string Port, string User = "", string Password = "")
         {
             int res;
+            this.Server = Server;
+            this.Port = Port;
+            this.User = User;
+            this.Password = Password;
             res = _vism.SetServer("CN_IPTCP:" + Server + "[" + Port + "]:"+User+":"+Password);
             if (res == 0)
             {
@@ -99,7 +133,11 @@ namespace Communication
         ///====================================================================
         public void Disconnect()
         {
-            _vism.SetServer("");
+            this.Server = "";
+            this.Port = "";
+            this.User = "";
+            this.Password = "";
+            _vism.SetServer(this.Server);
             _vism.DeleteConnection();
             _connstatus = false;
 
@@ -326,7 +364,7 @@ namespace Communication
         /// Движение вверх (к корню) глобала
         /// </summary>
         ///====================================================================
-        public void Up(string ShowSys = "1")
+        public string Up(string ShowSys = "1")
         {
             if ((null == this.NameSpace) ||
                 (null == this.Global))
@@ -345,6 +383,7 @@ namespace Communication
                     InitSub(_global);
                 }
             }
+            return _levels.Pop();
         }
         ///====================================================================
         /// <summary>
@@ -370,6 +409,7 @@ namespace Communication
                     InitSub(_global);
                 }
             }
+            _levels.Push(item);
         }
         ///====================================================================
         #endregion

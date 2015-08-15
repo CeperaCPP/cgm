@@ -30,6 +30,8 @@ namespace cpm
         private string _passwordR;
 
         private string _showsys;
+
+        private string _beforePos;
         ///====================================================================
         /// <summary>
         /// Конструктор
@@ -61,6 +63,8 @@ namespace cpm
             cbservers.Add(listViewLeft, toolStripLeftServer);
             cbservers.Add(listViewRight, toolStripRightServer);
 
+            _beforePos = "";
+
         }
         ///====================================================================
         /// <summary>
@@ -81,7 +85,7 @@ namespace cpm
             _userR = "_system";
             _passwordR = "SYS";
             // Показать системные глобалы
-            _showsys = "0";
+            _showsys = "1";
         }
 
         ///====================================================================
@@ -201,7 +205,7 @@ namespace cpm
             val = lv.SelectedItems[0].Text;
             if (".." == val)
             {
-                brokerobj.Up(ShowSys);
+                _beforePos = brokerobj.Up(ShowSys);
             }
             else
             {
@@ -253,7 +257,39 @@ namespace cpm
                 lv.Items.Add(glb);
                 glb = broker.NextGlobal(glb);
             }
+            FocusLVItem(lv);
             //lv.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+        }
+        ///====================================================================
+        /// <summary>
+        /// Выделить элемент, на котором стояли при переходе в глубь дерева
+        /// </summary>
+        ///====================================================================
+        private void FocusLVItem(ListView lv)
+        {
+            lv.Focus();
+            if ("" != _beforePos)
+            {
+                ListViewItem item = lv.FindItemWithText(_beforePos);
+                if (item != null)
+                {
+                    item.Selected = true;
+                    lv.FocusedItem=item;
+                    lv.TopItem = item;
+                }
+                else
+                {
+                    lv.Items[0].Selected = true;
+                    lv.FocusedItem=lv.Items[0];
+                    lv.TopItem = lv.Items[0];
+                }
+            }
+            else
+            {
+                lv.Items[0].Selected = true;
+                lv.FocusedItem=lv.Items[0];
+                lv.TopItem = lv.Items[0];
+            }            
         }
         ///====================================================================
         /// <summary>
