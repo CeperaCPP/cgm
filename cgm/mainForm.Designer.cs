@@ -454,9 +454,9 @@
             this.listViewLeft.UseCompatibleStateImageBehavior = false;
             this.listViewLeft.View = System.Windows.Forms.View.Details;
             this.listViewLeft.ClientSizeChanged += new System.EventHandler(this.listView_SizeChanged);
-            this.listViewLeft.DoubleClick += new System.EventHandler(this.listViewLeft_Click);
-            this.listViewLeft.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewLeft_KeyDown);
-            this.listViewLeft.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listViewLeft_KeyUp);
+            this.listViewLeft.DoubleClick += new System.EventHandler(this.listView_Click);
+            this.listViewLeft.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listView_KeyDown);
+            this.listViewLeft.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listView_KeyUp);
             // 
             // toolStripLeft
             // 
@@ -502,9 +502,9 @@
             this.listViewRight.UseCompatibleStateImageBehavior = false;
             this.listViewRight.View = System.Windows.Forms.View.Details;
             this.listViewRight.ClientSizeChanged += new System.EventHandler(this.listView_SizeChanged);
-            this.listViewRight.DoubleClick += new System.EventHandler(this.listViewRight_Click);
-            this.listViewRight.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewRight_KeyDown);
-            this.listViewRight.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listViewRight_KeyUp);
+            this.listViewRight.DoubleClick += new System.EventHandler(this.listView_Click);
+            this.listViewRight.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listView_KeyDown);
+            this.listViewRight.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listView_KeyUp);
             // 
             // toolStripRight
             // 

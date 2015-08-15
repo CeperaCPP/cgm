@@ -14,8 +14,6 @@ namespace cpm
 {
     public partial class mainForm : Form
     {
-        private Broker _leftbrocker = null;
-        private Broker _rightbrocker = null;
         private Dictionary<ListView, Broker> brokers = null;
         private Dictionary<ListView, ToolStripComboBox> cbnsp = null;
         private Dictionary<ListView, ToolStripComboBox> cbservers = null;
@@ -43,17 +41,19 @@ namespace cpm
             MyInitializeComponent();
             readConfig();
         }
-
+        ///====================================================================
+        /// <summary>
+        /// Инициализация "наших" компонентов
+        /// </summary>
+        ///====================================================================
         private void MyInitializeComponent()
         {
             brokers = new Dictionary<ListView, Broker>();
             cbnsp = new Dictionary<ListView, ToolStripComboBox>();
             cbservers = new Dictionary<ListView, ToolStripComboBox>();
-            _leftbrocker = new Broker();
-            _rightbrocker = new Broker();
 
-            brokers.Add(listViewLeft, _leftbrocker);
-            brokers.Add(listViewRight, _rightbrocker);
+            brokers.Add(listViewLeft, new Broker());
+            brokers.Add(listViewRight, new Broker());
 
             cbnsp.Add(listViewLeft, toolStripLeftNSP);
             cbnsp.Add(listViewRight, toolStripRightNSP);
@@ -71,17 +71,17 @@ namespace cpm
         private void readConfig()
         {
             // левая панель
-            _serverL = "labc";
+            _serverL = "win10";
             _portL = "1972";
             _userL = "_system";
             _passwordL = "SYS";
             // правая панель
-            _serverR = "localhost";
+            _serverR = "win10";
             _portR = "1972";
             _userR = "_system";
             _passwordR = "SYS";
             // Показать системные глобалы
-            _showsys = "1";
+            _showsys = "0";
         }
 
         ///====================================================================
@@ -105,27 +105,11 @@ namespace cpm
             {
                 if (pair.Value.Connect(_serverL, _portL, _userL, _passwordL))
                 {
-                    //string cbname=(string)pair.Key.Tag;
-                    //MemberInfo cmb = this.GetType().GetMember(cbname);
-                    //ToolStripComboBox test = (ToolStripComboBox)GetType().GetProperty("toolStripLeftNSP").GetValue(this);
                     pair.Value.InitNSP();
-                    PanelInit(pair.Value, toolStripLeftNSP, pair.Key);
+                    ToolStripComboBox toolStrip = cbnsp[pair.Key];
+                    PanelInit(pair.Value, toolStrip, pair.Key);
                 }
-            }
-            
-            /*
-            //MessageBox.Show("hello");
-            if (_leftbrocker.Connect(_serverL, _portL, _userL, _passwordL))
-            {
-                _leftbrocker.InitNSP();
-                PanelInit(_leftbrocker, toolStripLeftNSP, listViewLeft);
-            }
-            if (_rightbrocker.Connect(_serverR, _portR, _userR, _passwordR))
-            {
-                _rightbrocker.InitNSP();
-                PanelInit(_rightbrocker, toolStripRightNSP, listViewRight);
-            }
-            */
+            }            
         }
         ///====================================================================
         /// <summary>
@@ -134,16 +118,14 @@ namespace cpm
         ///====================================================================
         private void mainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_leftbrocker.ConnectionStatus)
+            foreach (KeyValuePair<ListView, Broker> pair in brokers)
             {
-                _leftbrocker.ClearBUF();
-                _leftbrocker.Disconnect();
-            }
-            if (_rightbrocker.ConnectionStatus)
-            {
-                _rightbrocker.ClearBUF();
-                _rightbrocker.Disconnect();
-            }
+                if (pair.Value.ConnectionStatus)
+                {
+                    pair.Value.ClearBUF();
+                    pair.Value.Disconnect();
+                }
+            }  
         }
         ///====================================================================
         /// <summary>
@@ -162,26 +144,50 @@ namespace cpm
             listView_SizeChanged(lstview);
         }
         ///====================================================================
+        /// Блок кода отвечающий за обработку событий на ListView
+        ///====================================================================
+        #region Обработчики нажатия клавиш ListView
+        ///====================================================================
+        /// <summary>
+        /// Нажатие клавиши на правой панели
+        /// </summary>
+        ///====================================================================
+        private void listView_KeyDown(object sender, KeyEventArgs e)
+        {
+            object[] args = null;
+            ListView lv = (ListView)sender;
+            Broker br = brokers[lv];
+            MethodInfo method = this.GetType().GetMethod(e.KeyCode.ToString() + "KeyDown");
+            if (null == method) return;
+            args = new object[] { lv, br, e };
+            method.Invoke(this, args);            
+        }
+        ///====================================================================
+        /// <summary>
+        /// Отпустили клавишу на правой панели
+        /// </summary>
+        ///====================================================================
+        private void listView_KeyUp(object sender, KeyEventArgs e)
+        {
+            object[] args = null;
+            ListView lv = (ListView)sender;
+            Broker br = brokers[lv];
+            MethodInfo method = this.GetType().GetMethod(e.KeyCode.ToString() + "KeyUp");
+            if (null == method) return;
+            args = new object[] { lv, br, e };
+            method.Invoke(this, args);  
+        }
+        ///====================================================================
         /// <summary>
         /// Клик по элементу в левой панели
         /// </summary>
         ///====================================================================
-        private void listViewLeft_Click(object sender, EventArgs e)
+        private void listView_Click(object sender, EventArgs e)
         {
             ListView lv = (ListView)sender;
-            initDataBuf(lv, _leftbrocker, _showsys);
-            ReLoad(lv, _leftbrocker);
-        }
-        ///====================================================================
-        /// <summary>
-        /// Клик по элементу в правой панели
-        /// </summary>
-        ///====================================================================
-        private void listViewRight_Click(object sender, EventArgs e)
-        {
-            ListView lv = (ListView)sender;
-            initDataBuf(lv, _rightbrocker, _showsys);
-            ReLoad(lv, _rightbrocker);
+            Broker br = brokers[lv];
+            initDataBuf(lv, br, _showsys);
+            ReLoad(lv, br);
         }
         ///====================================================================
         /// <summary>
@@ -193,7 +199,8 @@ namespace cpm
             string val;
             if (lv.SelectedItems.Count == 0) return;
             val = lv.SelectedItems[0].Text;
-            if (".." == val) {
+            if (".." == val)
+            {
                 brokerobj.Up(ShowSys);
             }
             else
@@ -201,63 +208,6 @@ namespace cpm
                 brokerobj.Down(val);
             }
 
-        }
-        ///====================================================================
-        /// Блок кода отвечающий за обработку нажатия клавиш
-        ///====================================================================
-        #region Обработчики нажатия клавиш для панелей
-        ///====================================================================
-        /// <summary>
-        /// Нажатие клавиши на левой панели
-        /// </summary>
-        ///====================================================================
-        private void listViewLeft_KeyDown(object sender, KeyEventArgs e)
-        {
-            object[] args = null;
-            MethodInfo method = this.GetType().GetMethod(e.KeyCode.ToString() + "KeyDown");
-            if (null == method) return;
-            args = new object[] { listViewLeft, _leftbrocker, e };
-            method.Invoke(this, args); 
-
-        }
-        ///====================================================================
-        /// <summary>
-        /// Отпустили клавишу на левой панели
-        /// </summary>
-        ///====================================================================
-        private void listViewLeft_KeyUp(object sender, KeyEventArgs e)
-        {
-            object[] args = null;
-            MethodInfo method = this.GetType().GetMethod(e.KeyCode.ToString() + "KeyUp");
-            if (null == method) return;
-            args = new object[] { listViewLeft, _leftbrocker, e };
-            method.Invoke(this, args); 
-        }
-        ///====================================================================
-        /// <summary>
-        /// Нажатие клавиши на правой панели
-        /// </summary>
-        ///====================================================================
-        private void listViewRight_KeyDown(object sender, KeyEventArgs e)
-        {
-            object[] args = null;
-            MethodInfo method = this.GetType().GetMethod(e.KeyCode.ToString() + "KeyDown");
-            if (null == method) return;
-            args= new object[] {listViewRight, _rightbrocker ,e};
-            method.Invoke(this, args);            
-        }
-        ///====================================================================
-        /// <summary>
-        /// Отпустили клавишу на правой панели
-        /// </summary>
-        ///====================================================================
-        private void listViewRight_KeyUp(object sender, KeyEventArgs e)
-        {
-            object[] args = null;
-            MethodInfo method = this.GetType().GetMethod(e.KeyCode.ToString() + "KeyUp");
-            if (null == method) return;
-            args = new object[] { listViewRight, _rightbrocker, e };
-            method.Invoke(this, args);  
         }
         #endregion
         ///====================================================================
