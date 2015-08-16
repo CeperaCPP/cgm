@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -17,17 +18,6 @@ namespace cpm
         private Dictionary<ListView, Broker> brokers = null;
         private Dictionary<ListView, ToolStripComboBox> cbnsp = null;
         private Dictionary<ListView, ToolStripComboBox> cbservers = null;
-
-        //private string _serverL = "127.0.0.1" ; //"WIN10";
-        private string _serverL;
-        private string _portL;
-        private string _userL;
-        private string _passwordL;
-
-        private string _serverR;
-        private string _portR;
-        private string _userR;
-        private string _passwordR;
 
         private string _showsys;
 
@@ -65,6 +55,10 @@ namespace cpm
 
             _beforePos = "";
 
+            //Properties.Settings.Default.myColor = Color.AliceBlue;
+
+            //Properties.Settings.Default.myColor = Color.AliceBlue;
+            //Properties.Settings.Default.Save();
         }
         ///====================================================================
         /// <summary>
@@ -75,15 +69,15 @@ namespace cpm
         private void readConfig()
         {
             // левая панель
-            _serverL = "win10";
-            _portL = "1972";
-            _userL = "_system";
-            _passwordL = "SYS";
+            brokers[listViewLeft].Server = "win10";
+            brokers[listViewLeft].Port = "1972";
+            brokers[listViewLeft].User = "_system";
+            brokers[listViewLeft].Password = "SYS";
             // правая панель
-            _serverR = "win10";
-            _portR = "1972";
-            _userR = "_system";
-            _passwordR = "SYS";
+            brokers[listViewRight].Server = "win10";
+            brokers[listViewRight].Port = "1972";
+            brokers[listViewRight].User = "_system";
+            brokers[listViewRight].Password = "SYS";
             // Показать системные глобалы
             _showsys = "1";
         }
@@ -107,7 +101,7 @@ namespace cpm
             
             foreach (KeyValuePair<ListView,Broker> pair in brokers) 
             {
-                if (pair.Value.Connect(_serverL, _portL, _userL, _passwordL))
+                if (pair.Value.Connect())
                 {
                     pair.Value.InitNSP();
                     ToolStripComboBox toolStrip = cbnsp[pair.Key];

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VISMLib;
-
+using Localization;
 namespace Communication
 {
     public class Broker
@@ -84,6 +84,11 @@ namespace Communication
             _vism = new VisM();
             _subscripts = new Stack<string>();
             _levels = new Stack<string>();
+            _server = "";
+            _port = "";
+            _user = "";
+            _pass = "";
+
         }
         ///====================================================================
         /// <summary>
@@ -99,13 +104,11 @@ namespace Communication
         /// Подключиться к базе
         /// </summary>
         ///====================================================================
-        public bool Connect(string Server, string Port, string User = "", string Password = "")
+        public bool Connect()
         {
             int res;
-            this.Server = Server;
-            this.Port = Port;
-            this.User = User;
-            this.Password = Password;
+            if (Server=="") throw new Exception(Translate.Brocker_Connect_Empty_Server);
+            if (Port == "") throw new Exception(Translate.Brocker_Connect_Empty_Port);          
             res = _vism.SetServer("CN_IPTCP:" + Server + "[" + Port + "]:"+User+":"+Password);
             if (res == 0)
             {
