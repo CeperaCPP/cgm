@@ -220,7 +220,7 @@
             this.toolStripBottom.Size = new System.Drawing.Size(784, 25);
             this.toolStripBottom.Stretch = true;
             this.toolStripBottom.TabIndex = 21;
-            this.toolStripBottom.Resize += new System.EventHandler(this.toolStripBottom_Resize);
+            this.toolStripBottom.SizeChanged += new System.EventHandler(this.toolStripBottom_SizeChanged);
             // 
             // toolStripButtonF1
             // 

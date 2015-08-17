@@ -84,15 +84,6 @@ namespace cpm
 
         ///====================================================================
         /// <summary>
-        /// Изменение размера функциональных клавиш
-        /// </summary>
-        ///=====================================================================
-        private void toolStripBottom_Resize(object sender, EventArgs e)
-        {
-            //MessageBox.Show("hello");            
-        }
-        ///====================================================================
-        /// <summary>
         /// Обработчик загрузки формы
         /// </summary>
         ///====================================================================
@@ -310,6 +301,26 @@ namespace cpm
                     header.Width = (int)(lv.Width * prc);
                 }
             }
+        }
+        ///====================================================================
+        /// <summary>
+        /// Изменение ширины функциональных клавиш
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        ///====================================================================
+        private void toolStripBottom_SizeChanged(object sender, EventArgs e)
+        {
+            int sepr = 6 * 11; // сумма ширины всех разделителей
+            int wdthKeys = (toolStripBottom.Width - sepr);
+            foreach (ToolStripItem itm in toolStripBottom.Items)
+            {
+                if (itm.GetType() == typeof(ToolStripButton)) 
+                {
+                    itm.Width = (int) (wdthKeys / 12);
+                }
+            }
+ 
         }
         ///====================================================================
     }
