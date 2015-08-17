@@ -79,7 +79,7 @@ namespace cpm
             brokers[listViewRight].User = "_system";
             brokers[listViewRight].Password = "SYS";
             // Показать системные глобалы
-            _showsys = "1";
+            _showsys = "0";
         }
 
         ///====================================================================
@@ -194,7 +194,7 @@ namespace cpm
             }
             else
             {
-                brokerobj.Down(val);
+                brokerobj.Down(val, ShowSys);
             }
 
         }
