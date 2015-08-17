@@ -17,12 +17,18 @@ namespace Communication
         private bool _connstatus = false;
         private string _nsp = null;
         private string _global = null;
+        //========================================
+        // заменить на использование объета Server
         private string _server = null;
         private string _port = null;
         private string _user = null;
         private string _pass = null;
+        //========================================
         private Stack<string> _subscripts;
         private Stack<string> _levels;
+        private string _startSS = null;
+        private string _endSS = null;
+        private int _sizeSS = 0;
         ///====================================================================
         /// <summary>
         /// Имя активной области
@@ -64,6 +70,36 @@ namespace Communication
             set { this._pass = value; }
         }
         ///====================================================================
+        /// <summary>
+        /// Максимальный размер буфера. Фактически кол-во элементов
+        /// </summary>
+        ///====================================================================
+        public int Size
+        {
+            get { return _sizeSS; }
+            set { this._sizeSS = value; }
+        }
+        ///====================================================================
+        /// <summary>
+        /// Начальный элемент
+        /// </summary>
+        ///====================================================================
+        public string Start
+        {
+            get { return _startSS; }
+            set { this._startSS = value; }
+        }
+        ///====================================================================
+        /// <summary>
+        /// Конечный элемент
+        /// </summary>
+        ///====================================================================
+        public string End
+        {
+            get { return _endSS; }
+            set { this._endSS = value; }
+        }
+        ///====================================================================
         public bool ConnectionStatus
         {
             get { return _connstatus; }
@@ -88,6 +124,9 @@ namespace Communication
             _port = "";
             _user = "";
             _pass = "";
+
+            _startSS = "";
+            _endSS = "";
 
         }
         ///====================================================================
@@ -149,6 +188,83 @@ namespace Communication
         /// 
         ///====================================================================
         #region Инициализация буфера данными
+
+        /*
+INITNSP(Start="",Size=0,Direction=1)
+ K ^CacheTempCGM($J)
+ K ^CacheTempCGMBuf($J)
+ S P2="Nsp"
+ S P3=""
+ S revers=$S(Direction=1:-1,1:1)
+ set rs=##class(%ResultSet).%New()
+ set rs.ClassName="%SYS.Namespace"
+ set rs.QueryName="List"
+ set sc=rs.Execute()
+ while rs.%Next() { 
+ 	set ^CacheTempCGMBuf($J,rs.Data(P2))=P3 
+ }
+ 
+ S P0=$NA(^CacheTempCGMBuf($J))
+ S P1=""
+ S nod=$S(Start'="":$O(@P0@(Start),revers),1:P1)
+ F  {
+  S nod=$O(@P0@(nod),Direction) 
+  Q:nod=P1
+  S ^CacheTempCGM($J,nod)=P1
+  Q:'$I(Size,-1)
+ } 
+ Q
+ //========================================
+INITGLB(NSP,SysGlb,Start="",Size=0,Direction=1)
+	S P0 = "%SYS.GlobalQuery"
+	S P1 = "NameSpaceListChui"
+	S P2 = NSP                 //NameSpace 
+	S P3 = "*"                 //Mask 
+	S P4 = SysGlb              //SystemGlobals
+	S P5 = "Name"
+	S P6 = "("
+	S P7 = " "
+	S P8 = ""
+	k ^CacheTempCGMBuf($J)
+	K ^CacheTempCGM($J)
+	S revers=$S(Direction=1:-1,1:1)
+	set rs=##class(%ResultSet).%New()	
+	set rs.ClassName=P0
+	set rs.QueryName=P1
+	set sc=rs.Execute(P2,P3,P4)
+	while rs.%Next() { 
+		set nam=$p($p(rs.Data(P5),P6,1),P7,1)
+		set ^CacheTempCGMBuf($J,nam)=P8 
+	}
+	k rs,sc
+	
+	S P0=$NA(^CacheTempCGMBuf($J))
+	S P1=""
+	S nod=$S(Start'="":$O(@P0@(Start),revers),1:P1)
+	 F  {
+	 S nod=$O(@P0@(nod),Direction) 
+	 Q:nod=P1
+	 S ^CacheTempCGM($J,nod)=P1
+	 Q:'$I(Size,-1)
+ } 	
+ Q
+ //========================================
+INITSS(Start="",Size=0,Direction=1)
+ K ^CacheTempCGMBuf($J)
+ K ^CacheTempCGM($J)
+ S P0=$NA(^O)
+ S P1=""
+ S revers=$S(Direction=1:-1,1:1)
+ S nod=$S(Start'="":$O(@P0@(Start),revers),1:P1) 
+ F  {
+	 S nod=$O(@P0@(nod),Direction) 
+	 Q:nod=P1	 
+	 S ^CacheTempCGM($J,nod)=P1
+	 Q:'$I(Size,-1)
+ }
+ Q         
+         */
+
         ///====================================================================
         /// <summary>
         /// Инициализация списка областей БД во временный глобал
@@ -235,7 +351,7 @@ namespace Communication
         ///====================================================================
         /// <summary>
         /// Вернуть имя глобала с подузлами в виде строки.
-        /// Заполняет данные в переменную P2
+        /// Заполняет данные в переменную P1
         /// </summary>
         ///====================================================================
         private string getGlbName(string NSP = "",string Glb = "")
