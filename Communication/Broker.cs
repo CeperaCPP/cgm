@@ -188,89 +188,12 @@ namespace Communication
         /// 
         ///====================================================================
         #region Инициализация буфера данными
-
-        /*
-INITNSP(Start="",Size=0,Direction=1)
- K ^CacheTempCGM($J)
- K ^CacheTempCGMBuf($J)
- S P2="Nsp"
- S P3=""
- S revers=$S(Direction=1:-1,1:1)
- set rs=##class(%ResultSet).%New()
- set rs.ClassName="%SYS.Namespace"
- set rs.QueryName="List"
- set sc=rs.Execute()
- while rs.%Next() { 
- 	set ^CacheTempCGMBuf($J,rs.Data(P2))=P3 
- }
- 
- S P0=$NA(^CacheTempCGMBuf($J))
- S P1=""
- S nod=$S(Start'="":$O(@P0@(Start),revers),1:P1)
- F  {
-  S nod=$O(@P0@(nod),Direction) 
-  Q:nod=P1
-  S ^CacheTempCGM($J,nod)=P1
-  Q:'$I(Size,-1)
- } 
- Q
- //========================================
-INITGLB(NSP,SysGlb,Start="",Size=0,Direction=1)
-	S P0 = "%SYS.GlobalQuery"
-	S P1 = "NameSpaceListChui"
-	S P2 = NSP                 //NameSpace 
-	S P3 = "*"                 //Mask 
-	S P4 = SysGlb              //SystemGlobals
-	S P5 = "Name"
-	S P6 = "("
-	S P7 = " "
-	S P8 = ""
-	k ^CacheTempCGMBuf($J)
-	K ^CacheTempCGM($J)
-	S revers=$S(Direction=1:-1,1:1)
-	set rs=##class(%ResultSet).%New()	
-	set rs.ClassName=P0
-	set rs.QueryName=P1
-	set sc=rs.Execute(P2,P3,P4)
-	while rs.%Next() { 
-		set nam=$p($p(rs.Data(P5),P6,1),P7,1)
-		set ^CacheTempCGMBuf($J,nam)=P8 
-	}
-	k rs,sc
-	
-	S P0=$NA(^CacheTempCGMBuf($J))
-	S P1=""
-	S nod=$S(Start'="":$O(@P0@(Start),revers),1:P1)
-	 F  {
-	 S nod=$O(@P0@(nod),Direction) 
-	 Q:nod=P1
-	 S ^CacheTempCGM($J,nod)=P1
-	 Q:'$I(Size,-1)
- } 	
- Q
- //========================================
-INITSS(Start="",Size=0,Direction=1)
- K ^CacheTempCGMBuf($J)
- K ^CacheTempCGM($J)
- S P0=$NA(^O)
- S P1=""
- S revers=$S(Direction=1:-1,1:1)
- S nod=$S(Start'="":$O(@P0@(Start),revers),1:P1) 
- F  {
-	 S nod=$O(@P0@(nod),Direction) 
-	 Q:nod=P1	 
-	 S ^CacheTempCGM($J,nod)=P1
-	 Q:'$I(Size,-1)
- }
- Q         
-         */
-
         ///====================================================================
         /// <summary>
         /// Инициализация списка областей БД во временный глобал
         /// </summary>
         ///====================================================================
-        public void InitNSP()
+        public void InitNSP(string Start ="", int Size = 0, int Direction = 1)
         {
             string cmd;
             ClearBUF();
@@ -289,9 +212,24 @@ INITSS(Start="",Size=0,Direction=1)
             _vism.Execute(cmd);
             cmd = "set sc=rs.Execute()";
             _vism.Execute(cmd);
-            cmd = "while rs.%Next() { set ^CacheTempCGM($J,rs.Data(P2))=P3 }";
+            cmd = "while rs.%Next() { set ^CacheTempCGMBuf($J,rs.Data(P2))=P3 }";
             _vism.Execute(cmd);
             cmd = "k rs,sc";
+            _vism.Execute(cmd);
+
+            cmd = "S P0=$NA(^CacheTempCGMBuf($J))";
+            _vism.Execute(cmd);
+            _vism.P1 = "";
+            _vism.P2=Start;
+            _vism.P3=Direction;
+            _vism.P4=Size;
+            cmd = "S revers=$S(P3=1:-1,1:1)";
+            _vism.Execute(cmd);
+            cmd = "S nod=$S(P2'=P1:$O(@P0@(P2),revers),1:P1)";
+            _vism.Execute(cmd);
+            cmd = "F  {S nod=$O(@P0@(nod),P3) Q:nod=P1  S ^CacheTempCGM($J,nod)=P1 Q:'$I(P4,-1)  }";
+            _vism.Execute(cmd);
+            cmd = "k nod,revers";
             _vism.Execute(cmd);
 
         }
@@ -301,7 +239,7 @@ INITSS(Start="",Size=0,Direction=1)
         /// области
         /// </summary>
         ///====================================================================
-        public void InitGlb(string NSP = "", string SysGlb = "0")
+        public void InitGlb(string NSP = "", string SysGlb = "0", string Start = "", int Size = 0, int Direction = 1)
         {
             string cmd;
             ClearBUF();
@@ -317,6 +255,7 @@ INITSS(Start="",Size=0,Direction=1)
             _vism.P6 = "(";
             _vism.P7 = " ";
             _vism.P8 = "";
+            
             cmd = "set rs=##class(%ResultSet).%New()";
             _vism.Execute(cmd);
             cmd = "set rs.ClassName=P0";
@@ -325,9 +264,25 @@ INITSS(Start="",Size=0,Direction=1)
             _vism.Execute(cmd);
             cmd = "set sc=rs.Execute(P2,P3,P4)";
             _vism.Execute(cmd);
-            cmd = "while rs.%Next() { set nam=$p($p(rs.Data(P5),P6,1),P7,1),^CacheTempCGM($J,nam)=P8 }";
+            cmd = "while rs.%Next() { set nam=$p($p(rs.Data(P5),P6,1),P7,1) set ^CacheTempCGMBuf($J,nam)=P8 }";
             _vism.Execute(cmd);
             cmd = "k rs,sc";
+            _vism.Execute(cmd);
+
+            cmd = "S P0=$NA(^CacheTempCGMBuf($J))";
+            _vism.Execute(cmd);
+            _vism.P1 = "";
+	        _vism.P2=Start;
+	        _vism.P3=Direction;
+            _vism.P4 = Size;
+
+            cmd = "S revers=$S(P3=1:-1,1:1)";
+            _vism.Execute(cmd);
+            cmd = "S nod=$S(P2'=P1:$O(@P0@(P2),revers),1:P1)";
+            _vism.Execute(cmd);
+            cmd = "F  { S nod=$O(@P0@(nod),P3) Q:nod=P1  S ^CacheTempCGM($J,nod)=P1 Q:'$I(P4,-1)  }";
+            _vism.Execute(cmd);
+            cmd = "k nod,revers";
             _vism.Execute(cmd);
         }
         ///====================================================================
@@ -335,16 +290,35 @@ INITSS(Start="",Size=0,Direction=1)
         /// Инициализация буфера узла дерева
         /// </summary>
         ///====================================================================
-        private void InitSub(string Glb = "")
+        private void InitSub(string Glb = "",int ViewType=1, string Start = "", int Size = 0, int Direction = 1)
         {
             string cmd;
             ClearBUF();
             _global = Glb;
             _vism.P0 = getGlbName(_nsp,_global);
             _vism.P1 = "";
-            cmd = "S nod=P1 F  S nod=$O(@P0@(nod)) Q:nod=P1  S ^CacheTempCGM($J,nod)=P1";
-            //cmd = "S nod=P0 F  S nod=$O(@nod) Q:nod=P1  S ^CacheTempCGM($J,nod)=P1";
+            _vism.P2 = Start;
+            _vism.P3 = Direction;
+            _vism.P4 = Size;
+
+            cmd = "S revers=$S(P3=1:-1,1:1)";
             _vism.Execute(cmd);
+            if (ViewType == 1)
+            {
+                cmd = "S nod=$S(P2'=P1:$O(@P0@(P2),revers),1:P1) ";
+                _vism.Execute(cmd);
+                cmd = "F  { S nod=$O(@P0@(nod),P3) Q:nod=P1  S ^CacheTempCGM($J,nod)=P1 Q:'$I(P4,-1) }";
+                _vism.Execute(cmd);
+            }
+            else
+            {
+                cmd = "S nod=$S(P2'=P1:$Q(@P0@(P2),revers),1:P0)";
+                _vism.Execute(cmd);
+                cmd = "if nod=P1 s nod=P0";
+                _vism.Execute(cmd);
+                cmd = "F  { S nod=$Q(@nod,P3) Q:nod=P1  S ^CacheTempCGM($J,nod)=P1 Q:'$I(P4,-1)  }";
+                _vism.Execute(cmd);
+            }         
             cmd = "k nod";
             _vism.Execute(cmd);
         }
@@ -384,6 +358,8 @@ INITSS(Start="",Size=0,Direction=1)
         {
             string cmd;
             cmd = "kill ^CacheTempCGM($J)";
+            _vism.Execute(cmd);
+            cmd = "kill ^CacheTempCGMBuf($J)";
             _vism.Execute(cmd);
         }
         ///====================================================================
