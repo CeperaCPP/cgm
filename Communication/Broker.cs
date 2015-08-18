@@ -29,6 +29,7 @@ namespace Communication
         private string _startSS = null;
         private string _endSS = null;
         private int _sizeSS = 0;
+        private int _directionSS = 0;
         ///====================================================================
         /// <summary>
         /// Имя активной области
@@ -108,6 +109,17 @@ namespace Communication
         public string GlobalPath
         {
             get { return ""; }
+        }
+        ///====================================================================
+        /// <summary>
+        /// Направление движения по узлам (1 или -1)
+        /// </summary>        
+        ///====================================================================
+        public int DirectionSS
+        {
+            get { return _directionSS; }
+
+            set { _directionSS = value; }
         }
         #endregion
         ///====================================================================

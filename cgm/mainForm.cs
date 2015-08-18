@@ -69,7 +69,7 @@ namespace cpm
         private void readConfig()
         {
             // левая панель
-            brokers[listViewLeft].Server = "kashak-test";
+            brokers[listViewLeft].Server = "localhost";
             brokers[listViewLeft].Port = "1972";
             brokers[listViewLeft].User = "_system";
             brokers[listViewLeft].Password = "SYS";
