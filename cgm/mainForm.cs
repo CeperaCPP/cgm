@@ -20,8 +20,8 @@ namespace cpm
         private Dictionary<ListView, ToolStripComboBox> cbservers = null;
 
         private string _showsys;
-
-        private string _beforePos;
+        // содержит элемент предыдущего уровня
+        private string _prevPos;
         ///====================================================================
         /// <summary>
         /// Конструктор
@@ -53,12 +53,8 @@ namespace cpm
             cbservers.Add(listViewLeft, toolStripLeftServer);
             cbservers.Add(listViewRight, toolStripRightServer);
 
-            _beforePos = "";
+            _prevPos = "";
 
-            //Properties.Settings.Default.myColor = Color.AliceBlue;
-
-            //Properties.Settings.Default.myColor = Color.AliceBlue;
-            //Properties.Settings.Default.Save();
         }
         ///====================================================================
         /// <summary>
@@ -187,10 +183,11 @@ namespace cpm
         {
             string val;
             if (lv.SelectedItems.Count == 0) return;
+            CalcAndSetSize(lv);
             val = lv.SelectedItems[0].Text;
             if (".." == val)
             {
-                _beforePos = brokerobj.Up(ShowSys);
+                _prevPos = brokerobj.Up(ShowSys);
             }
             else
             {
@@ -253,9 +250,9 @@ namespace cpm
         private void FocusLVItem(ListView lv)
         {
             lv.Focus();
-            if ("" != _beforePos)
+            if ("" != _prevPos)
             {
-                ListViewItem item = lv.FindItemWithText(_beforePos);
+                ListViewItem item = lv.FindItemWithText(_prevPos);
                 if (item != null)
                 {
                     item.Selected = true;
@@ -301,6 +298,8 @@ namespace cpm
                     header.Width = (int)(lv.Width * prc);
                 }
             }
+            CalcAndSetSize(lv);
+
         }
         ///====================================================================
         /// <summary>
@@ -321,6 +320,17 @@ namespace cpm
                 }
             }
  
+        }
+        ///====================================================================
+        /// <summary>
+        /// Установить размер буфера
+        /// </summary>
+        ///====================================================================
+        private void CalcAndSetSize(ListView lv)
+        {
+            int sz;
+            sz = (int)(lv.Height / 18);
+            brokers[lv].Size = sz;
         }
         ///====================================================================
     }

@@ -27,9 +27,8 @@ namespace Communication
         private Stack<string> _subscripts;
         private Stack<string> _levels;
         private string _startSS = null;
-        private string _endSS = null;
-        private int _sizeSS = 0;
-        private int _directionSS = 0;
+        private int _sizeSS;
+        private int _directionSS;
         ///====================================================================
         /// <summary>
         /// Имя активной области
@@ -91,16 +90,6 @@ namespace Communication
             set { this._startSS = value; }
         }
         ///====================================================================
-        /// <summary>
-        /// Конечный элемент
-        /// </summary>
-        ///====================================================================
-        public string End
-        {
-            get { return _endSS; }
-            set { this._endSS = value; }
-        }
-        ///====================================================================
         public bool ConnectionStatus
         {
             get { return _connstatus; }
@@ -138,7 +127,8 @@ namespace Communication
             _pass = "";
 
             _startSS = "";
-            _endSS = "";
+            _sizeSS = 0;
+            _directionSS = 1;
 
         }
         ///====================================================================
@@ -205,7 +195,7 @@ namespace Communication
         /// Инициализация списка областей БД во временный глобал
         /// </summary>
         ///====================================================================
-        public void InitNSP(string Start ="", int Size = 0, int Direction = 1)
+        public void InitNSP()
         {
             string cmd;
             ClearBUF();
@@ -232,9 +222,9 @@ namespace Communication
             cmd = "S P0=$NA(^CacheTempCGMBuf($J))";
             _vism.Execute(cmd);
             _vism.P1 = "";
-            _vism.P2=Start;
-            _vism.P3=Direction;
-            _vism.P4=Size;
+            _vism.P2=_startSS;
+            _vism.P3=_directionSS;
+            _vism.P4=_sizeSS;
             cmd = "S revers=$S(P3=1:-1,1:1)";
             _vism.Execute(cmd);
             cmd = "S nod=$S(P2'=P1:$O(@P0@(P2),revers),1:P1)";
@@ -251,7 +241,7 @@ namespace Communication
         /// области
         /// </summary>
         ///====================================================================
-        public void InitGlb(string NSP = "", string SysGlb = "0", string Start = "", int Size = 0, int Direction = 1)
+        public void InitGlb(string NSP = "", string SysGlb = "0")
         {
             string cmd;
             ClearBUF();
@@ -284,9 +274,9 @@ namespace Communication
             cmd = "S P0=$NA(^CacheTempCGMBuf($J))";
             _vism.Execute(cmd);
             _vism.P1 = "";
-	        _vism.P2=Start;
-	        _vism.P3=Direction;
-            _vism.P4 = Size;
+	        _vism.P2=_startSS;
+	        _vism.P3= _directionSS;
+            _vism.P4 = _sizeSS;
 
             cmd = "S revers=$S(P3=1:-1,1:1)";
             _vism.Execute(cmd);
@@ -302,16 +292,16 @@ namespace Communication
         /// Инициализация буфера узла дерева
         /// </summary>
         ///====================================================================
-        private void InitSub(string Glb = "",int ViewType=1, string Start = "", int Size = 0, int Direction = 1)
+        private void InitSub(string Glb = "",int ViewType=1)
         {
             string cmd;
             ClearBUF();
             _global = Glb;
             _vism.P0 = getGlbName(_nsp,_global);
             _vism.P1 = "";
-            _vism.P2 = Start;
-            _vism.P3 = Direction;
-            _vism.P4 = Size;
+            _vism.P2 = _startSS;
+            _vism.P3 = _directionSS;
+            _vism.P4 = _sizeSS;
 
             cmd = "S revers=$S(P3=1:-1,1:1)";
             _vism.Execute(cmd);
@@ -473,6 +463,7 @@ namespace Communication
         ///====================================================================
         public string Up(string ShowSys = "1")
         {
+            _startSS = _levels.Pop();
             if ((null == this.NameSpace) ||
                 (null == this.Global))
             {
@@ -490,7 +481,7 @@ namespace Communication
                     InitSub(_global);
                 }
             }
-            return _levels.Pop();
+            return _startSS;
         }
         ///====================================================================
         /// <summary>
@@ -500,6 +491,7 @@ namespace Communication
         public void Down(string item="", string ShowSys = "1")
         {
             if (""==item) return;
+            _startSS = "";
             if (null == this.NameSpace)
             {
                 InitGlb(item, ShowSys);
