@@ -492,7 +492,6 @@
             this.listViewRight.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewRight.FullRowSelect = true;
             this.listViewRight.GridLines = true;
-            this.listViewRight.HoverSelection = true;
             this.listViewRight.Location = new System.Drawing.Point(0, 25);
             this.listViewRight.MultiSelect = false;
             this.listViewRight.Name = "listViewRight";

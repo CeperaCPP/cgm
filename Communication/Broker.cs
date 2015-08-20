@@ -395,7 +395,7 @@ namespace Communication
         /// Следующий глобал из буфера
         /// </summary>
         ///====================================================================
-        public string NextGlobal(string Glb = "", bool Type = true, bool Revers = false)
+        public string NextGlobal(string Nod = "", bool Type = true, bool Revers = false)
         {
             string res;
             string buf;
@@ -403,7 +403,7 @@ namespace Communication
             order = "1";
             if (Revers) order = "-1";
             buf = dataBuf();
-            res = Next(buf, Glb, order, Type);
+            res = Next(buf, Nod, order, Type);
             return res;
         }
         ///====================================================================
@@ -411,7 +411,7 @@ namespace Communication
         /// Предыдущий глобал из буфера
         /// </summary>
         ///====================================================================
-        public string PreviousGlobal(string Glb = "", bool Type = true, bool Revers = false)
+        public string PreviousGlobal(string Nod = "", bool Type = true, bool Revers = false)
         {
             string res;
             string buf;
@@ -419,7 +419,7 @@ namespace Communication
             order = "-1";
             if (Revers) order = "1";
             buf = dataBuf();
-            res = Next(buf, Glb, order, Type);
+            res = Next(buf, Nod, order, Type);
             return res;
         }
         ///====================================================================
@@ -509,6 +509,53 @@ namespace Communication
                 }
             }
             _levels.Push(item);
+        }
+        ///====================================================================
+        /// <summary>
+        /// Движение вверх (к корню) глобала
+        /// </summary>
+        ///====================================================================
+        public void NarrUp(string ShowSys = "1")
+        {
+            if ((null == this.NameSpace) ||
+                (null == this.Global))
+            {
+                InitNSP();
+            }
+            else
+            {
+                if (_subscripts.Count == 0)
+                {
+                    InitGlb(_nsp, ShowSys);
+                }
+                else
+                {
+                    InitSub(_global);
+                }
+            }
+        }
+        ///====================================================================
+        /// <summary>
+        /// Движение в глубь (к листьям) глобала
+        /// </summary>
+        ///====================================================================
+        public void NarrDown(string ShowSys = "1")
+        {
+            if (null == this.NameSpace)
+            {
+                InitNSP();
+            }
+            else
+            {
+                if (null == this.Global)
+                {
+                    InitGlb(_nsp, ShowSys);                    
+                }
+                else
+                {
+                    InitSub(_global);
+                }
+            }
         }
         ///====================================================================
         #endregion

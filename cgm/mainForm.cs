@@ -76,7 +76,7 @@ namespace cpm
             brokers[listViewRight].User = "_system";
             brokers[listViewRight].Password = "SYS";
             // Показать системные глобалы
-            _showsys = "0";
+            _showsys = "1";
         }
 
         ///====================================================================
@@ -140,6 +140,7 @@ namespace cpm
         ///====================================================================
         private void listView_KeyDown(object sender, KeyEventArgs e)
         {
+            //MessageBox.Show(e.KeyCode.ToString());
             object[] args = null;
             ListView lv = (ListView)sender;
             Broker br = brokers[lv];
@@ -196,6 +197,25 @@ namespace cpm
             }
 
         }
+        ///====================================================================
+        /// <summary>
+        /// Инициализация буфера данных
+        /// </summary>
+        ///====================================================================
+        private void initDataBufOnLevel(ListView lv, Broker brokerobj, string ShowSys = "1")
+        {
+            string val;
+            if (lv.SelectedItems.Count == 0) return;
+            if (lv.Items[0].Selected)
+            {
+                brokerobj.NarrUp(ShowSys);
+            }
+            else
+            {
+                brokerobj.NarrDown(ShowSys);
+            }
+
+        }
         #endregion
         ///====================================================================
         /// 
@@ -210,6 +230,28 @@ namespace cpm
         {
             //MessageBox.Show("Enter Down");
             initDataBuf(lv, brocker, _showsys);
+
+        }
+        public void DownKeyDown(ListView lv, Broker brocker, KeyEventArgs evnt)
+        {
+            string newitmtxt;
+            ListViewItem item = null;
+            if (lv.Items[lv.Items.Count-1].Selected)
+            {
+                brocker.Start = lv.Items[lv.Items.Count - 1].Text;
+                brocker.Size = 2;
+                initDataBufOnLevel(lv, brocker, _showsys);
+                newitmtxt = brocker.NextGlobal(brocker.Start);
+                if (newitmtxt !="")
+                {
+                    item=lv.Items.Add(newitmtxt);
+                    lv.Items.RemoveAt(0);
+                    // item.Selected = true;
+                    //lv.FocusedItem = item;
+                    //lv.TopItem = item;
+                }
+
+            }
 
         }
         ///====================================================================
