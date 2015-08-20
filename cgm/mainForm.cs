@@ -54,6 +54,7 @@ namespace cpm
             cbservers.Add(listViewRight, toolStripRightServer);
 
             _prevPos = "";
+            _showsys = "1";
 
         }
         ///====================================================================
