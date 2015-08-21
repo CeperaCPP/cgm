@@ -95,6 +95,15 @@ namespace Communication
             get { return _connstatus; }
         }
         ///====================================================================
+        /// <summary>
+        /// Глубина в дереве
+        /// </summary>
+        ///====================================================================
+        public int Depth
+        {
+            get { return _levels.Count; }
+        }
+        ///====================================================================
         public string GlobalPath
         {
             get { return ""; }
@@ -463,7 +472,8 @@ namespace Communication
         ///====================================================================
         public string Up(string ShowSys = "1")
         {
-            _startSS = _levels.Pop();
+            string depth = _levels.Pop();
+            _startSS = "";
             if ((null == this.NameSpace) ||
                 (null == this.Global))
             {
@@ -481,7 +491,7 @@ namespace Communication
                     InitSub(_global);
                 }
             }
-            return _startSS;
+            return depth;
         }
         ///====================================================================
         /// <summary>
@@ -517,14 +527,13 @@ namespace Communication
         ///====================================================================
         public void NarrUp(string ShowSys = "1")
         {
-            if ((null == this.NameSpace) ||
-                (null == this.Global))
+            if (null == this.NameSpace)
             {
                 InitNSP();
             }
             else
             {
-                if (_subscripts.Count == 0)
+                if (null == this.Global)
                 {
                     InitGlb(_nsp, ShowSys);
                 }

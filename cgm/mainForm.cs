@@ -185,6 +185,8 @@ namespace cpm
         {
             string val;
             if (lv.SelectedItems.Count == 0) return;
+            brokerobj.Start = "";
+            brokerobj.DirectionSS = 1;
             CalcAndSetSize(lv);
             val = lv.SelectedItems[0].Text;
             if (".." == val)
@@ -204,7 +206,6 @@ namespace cpm
         ///====================================================================
         private void initDataBufOnLevel(ListView lv, Broker brokerobj, string ShowSys = "1")
         {
-            string val;
             if (lv.SelectedItems.Count == 0) return;
             if (lv.Items[0].Selected)
             {
@@ -229,9 +230,20 @@ namespace cpm
         public void ReturnKeyDown(ListView lv, Broker brocker, KeyEventArgs evnt)
         {
             //MessageBox.Show("Enter Down");
+            brocker.Start = "";
+            brocker.DirectionSS = 1;
+            CalcAndSetSize(lv);
             initDataBuf(lv, brocker, _showsys);
 
         }
+        ///====================================================================
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lv"></param>
+        /// <param name="brocker"></param>
+        /// <param name="evnt"></param>
+        ///====================================================================
         public void DownKeyDown(ListView lv, Broker brocker, KeyEventArgs evnt)
         {
             string newitmtxt;
@@ -240,15 +252,50 @@ namespace cpm
             {
                 brocker.Start = lv.Items[lv.Items.Count - 1].Text;
                 brocker.Size = 2;
+                brocker.DirectionSS = 1;
                 initDataBufOnLevel(lv, brocker, _showsys);
                 newitmtxt = brocker.NextGlobal(brocker.Start);
                 if (newitmtxt !="")
                 {
                     item=lv.Items.Add(newitmtxt);
                     lv.Items.RemoveAt(0);
-                    // item.Selected = true;
-                    //lv.FocusedItem = item;
-                    //lv.TopItem = item;
+                }
+
+            }
+
+        }
+        ///====================================================================
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lv"></param>
+        /// <param name="broker"></param>
+        /// <param name="evnt"></param>
+        ///====================================================================
+        public void UpKeyDown(ListView lv, Broker broker, KeyEventArgs evnt)
+        {
+            string newitmtxt;
+            ListViewItem item = null;
+            if (lv.Items[0].Selected &&
+                lv.Items[0].Text != "..")
+            {
+                broker.Start = lv.Items[0].Text;
+                broker.Size = 2;
+                broker.DirectionSS = -1;
+                initDataBufOnLevel(lv, broker, _showsys);
+                newitmtxt = broker.PreviousGlobal(broker.Start);
+                if (newitmtxt != "")
+                {
+                    item = lv.Items.Insert(0, newitmtxt);
+                    lv.Items.RemoveAt(lv.Items.Count-1);
+                }
+                else
+                {
+                    if (null != broker.NameSpace)
+                    {
+                        item = lv.Items.Insert(0, "..");
+                        lv.Items.RemoveAt(lv.Items.Count - 1);
+                    }
                 }
 
             }
