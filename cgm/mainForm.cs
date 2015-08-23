@@ -22,6 +22,7 @@ namespace cpm
         private string _showsys;
         // содержит элемент предыдущего уровня
         private string _prevPos;
+        private int _lvsize = 0;
         ///====================================================================
         /// <summary>
         /// Конструктор
@@ -118,14 +119,14 @@ namespace cpm
         /// Инициализация панели
         /// </summary>
         ///====================================================================
-        private void PanelInit(Broker brokerobj,ToolStripComboBox cbNSP, ListView lstview)
+        private void PanelInit(Broker broker,ToolStripComboBox cbNSP, ListView lstview)
         {
-            string nsp = brokerobj.NextGlobal("");
+            string nsp = broker.NextGlobal("");
             while (nsp != "")
             {                
                 cbNSP.Items.Add(nsp);
                 lstview.Items.Add(nsp);
-                nsp = brokerobj.NextGlobal(nsp);
+                nsp = broker.NextGlobal(nsp);
             }
             listView_SizeChanged(lstview);
         }
@@ -181,21 +182,21 @@ namespace cpm
         /// Инициализация буфера данных
         /// </summary>
         ///====================================================================
-        private void initDataBuf(ListView lv, Broker brokerobj, string ShowSys = "1")
+        private void initDataBuf(ListView lv, Broker broker, string ShowSys = "1")
         {
             string val;
             if (lv.SelectedItems.Count == 0) return;
-            brokerobj.Start = "";
-            brokerobj.DirectionSS = 1;
-            CalcAndSetSize(lv);
+            broker.Start = "";
+            broker.DirectionSS = 1;
+            broker.Size = _lvsize;
             val = lv.SelectedItems[0].Text;
             if (".." == val)
             {
-                _prevPos = brokerobj.Up(ShowSys);
+                _prevPos = broker.Up(ShowSys);
             }
             else
             {
-                brokerobj.Down(val, ShowSys);
+                broker.Down(val, ShowSys);
             }
 
         }
@@ -204,17 +205,10 @@ namespace cpm
         /// Инициализация буфера данных
         /// </summary>
         ///====================================================================
-        private void initDataBufOnLevel(ListView lv, Broker brokerobj, string ShowSys = "1")
+        private void initDataBufOnLevel(ListView lv, Broker broker, string ShowSys = "1")
         {
             if (lv.SelectedItems.Count == 0) return;
-            if (lv.Items[0].Selected)
-            {
-                brokerobj.NarrUp(ShowSys);
-            }
-            else
-            {
-                brokerobj.NarrDown(ShowSys);
-            }
+            broker.NarrUpDown(ShowSys);
 
         }
         #endregion
@@ -227,38 +221,47 @@ namespace cpm
         /// Обработка нажатия на клавишу Enter
         /// </summary>
         ///====================================================================
-        public void ReturnKeyDown(ListView lv, Broker brocker, KeyEventArgs evnt)
+        public void ReturnKeyDown(ListView lv, Broker broker, KeyEventArgs evnt)
         {
             //MessageBox.Show("Enter Down");
-            brocker.Start = "";
-            brocker.DirectionSS = 1;
-            CalcAndSetSize(lv);
-            initDataBuf(lv, brocker, _showsys);
+            initDataBuf(lv, broker, _showsys);
 
+        }
+        ///====================================================================
+        /// <summary>
+        /// Обработка отпускания клавиши Enter
+        /// </summary>
+        ///====================================================================
+        public void ReturnKeyUp(ListView lv, Broker broker, KeyEventArgs evnt)
+        {
+            ReLoad(lv, broker);
         }
         ///====================================================================
         /// <summary>
         /// 
         /// </summary>
         /// <param name="lv"></param>
-        /// <param name="brocker"></param>
+        /// <param name="broker"></param>
         /// <param name="evnt"></param>
         ///====================================================================
-        public void DownKeyDown(ListView lv, Broker brocker, KeyEventArgs evnt)
+        public void DownKeyDown(ListView lv, Broker broker, KeyEventArgs evnt)
         {
             string newitmtxt;
             ListViewItem item = null;
             if (lv.Items[lv.Items.Count-1].Selected)
             {
-                brocker.Start = lv.Items[lv.Items.Count - 1].Text;
-                brocker.Size = 2;
-                brocker.DirectionSS = 1;
-                initDataBufOnLevel(lv, brocker, _showsys);
-                newitmtxt = brocker.NextGlobal(brocker.Start);
+                broker.Start = lv.Items[lv.Items.Count - 1].Text;
+                broker.Size = 2;
+                broker.DirectionSS = 1;
+                initDataBufOnLevel(lv, broker, _showsys);
+                newitmtxt = broker.NextGlobal(broker.Start);
                 if (newitmtxt !="")
                 {
                     item=lv.Items.Add(newitmtxt);
-                    lv.Items.RemoveAt(0);
+                    if (lv.Items.Count > _lvsize)
+                    {
+                        lv.Items.RemoveAt(0);
+                    }
                 }
 
             }
@@ -287,28 +290,25 @@ namespace cpm
                 if (newitmtxt != "")
                 {
                     item = lv.Items.Insert(0, newitmtxt);
-                    lv.Items.RemoveAt(lv.Items.Count-1);
+                    if (lv.Items.Count > _lvsize)
+                    {
+                        lv.Items.RemoveAt(lv.Items.Count - 1);
+                    }
                 }
                 else
                 {
-                    if (null != broker.NameSpace)
+                    if (broker.Depth > 0)
                     {
                         item = lv.Items.Insert(0, "..");
-                        lv.Items.RemoveAt(lv.Items.Count - 1);
+                        if (lv.Items.Count > _lvsize)
+                        {
+                            lv.Items.RemoveAt(lv.Items.Count - 1);
+                        }
                     }
                 }
 
             }
 
-        }
-        ///====================================================================
-        /// <summary>
-        /// Обработка отпускания клавиши Enter
-        /// </summary>
-        ///====================================================================
-        public void ReturnKeyUp(ListView lv, Broker broker, KeyEventArgs evnt)
-        {
-            ReLoad(lv, broker);
         }
         ///====================================================================
         #endregion
@@ -321,16 +321,22 @@ namespace cpm
         {
             string glb;
             lv.Items.Clear();
-            if (null != broker.NameSpace) lv.Items.Add("..");
             glb = broker.NextGlobal("");
             while (glb != "")
             {
-                //cbNSP.Items.Add(glb);
                 lv.Items.Add(glb);
                 glb = broker.NextGlobal(glb);
             }
-            FocusLVItem(lv);
-            //lv.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+
+            if (broker.Depth > 0)
+            {
+                if ((broker.Start == "") || 
+                    (lv.Items.Count==0))
+                {
+                    lv.Items.Insert(0, "..");
+                }
+            }
+            FocusLVItem(lv);            
         }
         ///====================================================================
         /// <summary>
@@ -389,7 +395,7 @@ namespace cpm
                 }
             }
             CalcAndSetSize(lv);
-
+            // Добавить перечитывание содержимого ListView
         }
         ///====================================================================
         /// <summary>
@@ -418,9 +424,8 @@ namespace cpm
         ///====================================================================
         private void CalcAndSetSize(ListView lv)
         {
-            int sz;
-            sz = (int)(lv.Height / 18);
-            brokers[lv].Size = sz;
+            _lvsize = (int)(lv.Height / 18);
+            brokers[lv].Size = _lvsize;
         }
         ///====================================================================
     }

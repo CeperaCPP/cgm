@@ -473,7 +473,8 @@ namespace Communication
         public string Up(string ShowSys = "1")
         {
             string depth = _levels.Pop();
-            _startSS = "";
+            //_startSS = "";
+            _startSS = depth;
             if ((null == this.NameSpace) ||
                 (null == this.Global))
             {
@@ -522,33 +523,10 @@ namespace Communication
         }
         ///====================================================================
         /// <summary>
-        /// Движение вверх (к корню) глобала
-        /// </summary>
-        ///====================================================================
-        public void NarrUp(string ShowSys = "1")
-        {
-            if (null == this.NameSpace)
-            {
-                InitNSP();
-            }
-            else
-            {
-                if (null == this.Global)
-                {
-                    InitGlb(_nsp, ShowSys);
-                }
-                else
-                {
-                    InitSub(_global);
-                }
-            }
-        }
-        ///====================================================================
-        /// <summary>
         /// Движение в глубь (к листьям) глобала
         /// </summary>
         ///====================================================================
-        public void NarrDown(string ShowSys = "1")
+        public void NarrUpDown(string ShowSys = "1")
         {
             if (null == this.NameSpace)
             {
