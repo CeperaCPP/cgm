@@ -22,7 +22,7 @@ namespace cpm
         private string _showsys;
         // содержит элемент предыдущего уровня
         private string _prevPos;
-        private int _lvsize = 0;
+        private int _lvsize;
         ///====================================================================
         /// <summary>
         /// Конструктор
@@ -56,6 +56,7 @@ namespace cpm
 
             _prevPos = "";
             _showsys = "1";
+            _lvsize = 0;
 
         }
         ///====================================================================
@@ -238,7 +239,7 @@ namespace cpm
         }
         ///====================================================================
         /// <summary>
-        /// 
+        /// Стрелка вниз
         /// </summary>
         /// <param name="lv"></param>
         /// <param name="broker"></param>
@@ -258,10 +259,7 @@ namespace cpm
                 if (newitmtxt !="")
                 {
                     item=lv.Items.Add(newitmtxt);
-                    if (lv.Items.Count > _lvsize)
-                    {
-                        lv.Items.RemoveAt(0);
-                    }
+                    RemoveFrom(lv,0);
                 }
 
             }
@@ -269,7 +267,7 @@ namespace cpm
         }
         ///====================================================================
         /// <summary>
-        /// 
+        /// Стрелка вверх
         /// </summary>
         /// <param name="lv"></param>
         /// <param name="broker"></param>
@@ -290,20 +288,14 @@ namespace cpm
                 if (newitmtxt != "")
                 {
                     item = lv.Items.Insert(0, newitmtxt);
-                    if (lv.Items.Count > _lvsize)
-                    {
-                        lv.Items.RemoveAt(lv.Items.Count - 1);
-                    }
+                    RemoveFrom(lv, lv.Items.Count - 1);
                 }
                 else
                 {
                     if (broker.Depth > 0)
                     {
                         item = lv.Items.Insert(0, "..");
-                        if (lv.Items.Count > _lvsize)
-                        {
-                            lv.Items.RemoveAt(lv.Items.Count - 1);
-                        }
+                        RemoveFrom(lv, lv.Items.Count - 1);
                     }
                 }
 
@@ -311,12 +303,81 @@ namespace cpm
 
         }
         ///====================================================================
-        #endregion
+        /// <summary>
+        /// Кнопка Page Up
+        /// </summary>
+        /// <param name="lv"></param>
+        /// <param name="broker"></param>
+        /// <param name="evnt"></param>
+        ///====================================================================
+        public void PageUpKeyDown(ListView lv, Broker broker, KeyEventArgs evnt)
+        {
+            string newitmtxt;
+            ListViewItem item = null;
+            if (lv.Items[0].Selected &&
+                lv.Items[0].Text != "..")
+            {
+                broker.Start = lv.Items[0].Text;
+                broker.Size = _lvsize;
+                broker.DirectionSS = -1;
+                initDataBufOnLevel(lv, broker, _showsys);
+                newitmtxt = broker.PreviousGlobal(broker.Start);
+                if (newitmtxt != "")
+                {
+                    while (newitmtxt != "")
+                    {
+                        item = lv.Items.Insert(0, newitmtxt);
+                        RemoveFrom(lv, lv.Items.Count - 1);
+                        newitmtxt = broker.PreviousGlobal(newitmtxt);
+                    }
+                }
+                else
+                {
+                    if (broker.Depth > 0)
+                    {
+                        item = lv.Items.Insert(0, "..");
+                        RemoveFrom(lv, lv.Items.Count - 1);
+                    }
+                }
+
+            }
+
+        }
         ///====================================================================
         /// <summary>
-        /// Перечитать содержимое ListView
+        /// Кнопка Page Down
         /// </summary>
+        /// <param name="lv"></param>
+        /// <param name="broker"></param>
+        /// <param name="evnt"></param>
         ///====================================================================
+        public void NextKeyDown(ListView lv, Broker broker, KeyEventArgs evnt)
+        {
+            string newitmtxt;
+            ListViewItem item = null;
+            if (lv.Items[lv.Items.Count - 1].Selected)
+            {
+                broker.Start = lv.Items[lv.Items.Count - 1].Text;
+                broker.Size = _lvsize;
+                broker.DirectionSS = 1;
+                initDataBufOnLevel(lv, broker, _showsys);
+                newitmtxt = broker.NextGlobal(broker.Start);
+                while (newitmtxt != "")
+                {
+                    item = lv.Items.Add(newitmtxt);
+                    RemoveFrom(lv, 0);
+                    newitmtxt = broker.NextGlobal(newitmtxt);
+                }
+
+            }
+        }
+        ///====================================================================
+            #endregion
+            ///====================================================================
+            /// <summary>
+            /// Перечитать содержимое ListView
+            /// </summary>
+            ///====================================================================
         public void ReLoad(ListView lv, Broker broker)
         {
             string glb;
@@ -426,6 +487,18 @@ namespace cpm
         {
             _lvsize = (int)(lv.Height / 18);
             brokers[lv].Size = _lvsize;
+        }
+        ///====================================================================
+        /// <summary>
+        /// Удалить последний элемент из ListView
+        /// </summary>
+        ///====================================================================
+        private void RemoveFrom(ListView lv, int pos=0)
+        {
+            if (lv.Items.Count > _lvsize)
+            {
+                lv.Items.RemoveAt(pos);
+            }
         }
         ///====================================================================
     }
