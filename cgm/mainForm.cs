@@ -15,7 +15,7 @@ namespace cpm
 {
     public partial class mainForm : Form
     {
-        private Dictionary<ListView, Broker> brokers = null;
+        private Dictionary<ListView, Adapter> adapters = null;
         private Dictionary<ListView, ToolStripComboBox> cbnsp = null;
         private Dictionary<ListView, ToolStripComboBox> cbservers = null;
 
@@ -41,12 +41,12 @@ namespace cpm
         ///====================================================================
         private void MyInitializeComponent()
         {
-            brokers = new Dictionary<ListView, Broker>();
+            adapters = new Dictionary<ListView, Adapter>();
             cbnsp = new Dictionary<ListView, ToolStripComboBox>();
             cbservers = new Dictionary<ListView, ToolStripComboBox>();
 
-            brokers.Add(listViewLeft, new Broker());
-            brokers.Add(listViewRight, new Broker());
+            adapters.Add(listViewLeft, new Adapter());
+            adapters.Add(listViewRight, new Adapter());
 
             cbnsp.Add(listViewLeft, toolStripLeftNSP);
             cbnsp.Add(listViewRight, toolStripRightNSP);
@@ -68,15 +68,15 @@ namespace cpm
         private void readConfig()
         {
             // левая панель
-            brokers[listViewLeft].Server = "localhost";
-            brokers[listViewLeft].Port = "1972";
-            brokers[listViewLeft].User = "_system";
-            brokers[listViewLeft].Password = "SYS";
+            adapters[listViewLeft].Server = "localhost";
+            adapters[listViewLeft].Port = "1972";
+            adapters[listViewLeft].User = "_system";
+            adapters[listViewLeft].Password = "SYS";
             // правая панель
-            brokers[listViewRight].Server = "localhost";
-            brokers[listViewRight].Port = "1972";
-            brokers[listViewRight].User = "_system";
-            brokers[listViewRight].Password = "SYS";
+            adapters[listViewRight].Server = "localhost";
+            adapters[listViewRight].Port = "1972";
+            adapters[listViewRight].User = "_system";
+            adapters[listViewRight].Password = "SYS";
             // Показать системные глобалы
             _showsys = "1";
         }
@@ -89,7 +89,7 @@ namespace cpm
         private void mainForm_Load(object sender, EventArgs e)
         {
             
-            foreach (KeyValuePair<ListView,Broker> pair in brokers) 
+            foreach (KeyValuePair<ListView,Adapter> pair in adapters) 
             {
                 if (pair.Value.Connect())
                 {
@@ -106,7 +106,7 @@ namespace cpm
         ///====================================================================
         private void mainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            foreach (KeyValuePair<ListView, Broker> pair in brokers)
+            foreach (KeyValuePair<ListView, Adapter> pair in adapters)
             {
                 if (pair.Value.ConnectionStatus)
                 {
@@ -120,14 +120,14 @@ namespace cpm
         /// Инициализация панели
         /// </summary>
         ///====================================================================
-        private void PanelInit(Broker broker,ToolStripComboBox cbNSP, ListView lstview)
+        private void PanelInit(Adapter adapter,ToolStripComboBox cbNSP, ListView lstview)
         {
-            string nsp = broker.NextGlobal("");
+            string nsp = adapter.NextGlobal("");
             while (nsp != "")
             {                
                 cbNSP.Items.Add(nsp);
                 lstview.Items.Add(nsp);
-                nsp = broker.NextGlobal(nsp);
+                nsp = adapter.NextGlobal(nsp);
             }
             listView_SizeChanged(lstview);
         }
@@ -145,7 +145,7 @@ namespace cpm
             //MessageBox.Show(e.KeyCode.ToString());
             object[] args = null;
             ListView lv = (ListView)sender;
-            Broker br = brokers[lv];
+            Adapter br = adapters[lv];
             MethodInfo method = this.GetType().GetMethod(e.KeyCode.ToString() + "KeyDown");
             if (null == method) return;
             args = new object[] { lv, br, e };
@@ -160,7 +160,7 @@ namespace cpm
         {
             object[] args = null;
             ListView lv = (ListView)sender;
-            Broker br = brokers[lv];
+            Adapter br = adapters[lv];
             MethodInfo method = this.GetType().GetMethod(e.KeyCode.ToString() + "KeyUp");
             if (null == method) return;
             args = new object[] { lv, br, e };
@@ -174,7 +174,7 @@ namespace cpm
         private void listView_Click(object sender, EventArgs e)
         {
             ListView lv = (ListView)sender;
-            Broker br = brokers[lv];
+            Adapter br = adapters[lv];
             initDataBuf(lv, br, _showsys);
             ReLoad(lv, br);
         }
@@ -183,21 +183,21 @@ namespace cpm
         /// Инициализация буфера данных
         /// </summary>
         ///====================================================================
-        private void initDataBuf(ListView lv, Broker broker, string ShowSys = "1")
+        private void initDataBuf(ListView lv, Adapter adapter, string ShowSys = "1")
         {
             string val;
             if (lv.SelectedItems.Count == 0) return;
-            broker.Start = "";
-            broker.DirectionSS = 1;
-            broker.Size = _lvsize;
+            adapter.Start = "";
+            adapter.DirectionSS = 1;
+            adapter.Size = _lvsize;
             val = lv.SelectedItems[0].Text;
             if (".." == val)
             {
-                _prevPos = broker.Up(ShowSys);
+                _prevPos = adapter.Up(ShowSys);
             }
             else
             {
-                broker.Down(val, ShowSys);
+                adapter.Down(val, ShowSys);
             }
 
         }
@@ -206,10 +206,10 @@ namespace cpm
         /// Инициализация буфера данных
         /// </summary>
         ///====================================================================
-        private void initDataBufOnLevel(ListView lv, Broker broker, string ShowSys = "1")
+        private void initDataBufOnLevel(ListView lv, Adapter adapter, string ShowSys = "1")
         {
             if (lv.SelectedItems.Count == 0) return;
-            broker.NarrUpDown(ShowSys);
+            adapter.NarrUpDown(ShowSys);
 
         }
         #endregion
@@ -222,10 +222,10 @@ namespace cpm
         /// Обработка нажатия на клавишу Enter
         /// </summary>
         ///====================================================================
-        public void ReturnKeyDown(ListView lv, Broker broker, KeyEventArgs evnt)
+        public void ReturnKeyDown(ListView lv, Adapter adapter, KeyEventArgs evnt)
         {
             //MessageBox.Show("Enter Down");
-            initDataBuf(lv, broker, _showsys);
+            initDataBuf(lv, adapter, _showsys);
 
         }
         ///====================================================================
@@ -233,29 +233,29 @@ namespace cpm
         /// Обработка отпускания клавиши Enter
         /// </summary>
         ///====================================================================
-        public void ReturnKeyUp(ListView lv, Broker broker, KeyEventArgs evnt)
+        public void ReturnKeyUp(ListView lv, Adapter adapter, KeyEventArgs evnt)
         {
-            ReLoad(lv, broker);
+            ReLoad(lv, adapter);
         }
         ///====================================================================
         /// <summary>
         /// Стрелка вниз
         /// </summary>
         /// <param name="lv"></param>
-        /// <param name="broker"></param>
+        /// <param name="adapter"></param>
         /// <param name="evnt"></param>
         ///====================================================================
-        public void DownKeyDown(ListView lv, Broker broker, KeyEventArgs evnt)
+        public void DownKeyDown(ListView lv, Adapter adapter, KeyEventArgs evnt)
         {
             string newitmtxt;
             ListViewItem item = null;
             if (lv.Items[lv.Items.Count-1].Selected)
             {
-                broker.Start = lv.Items[lv.Items.Count - 1].Text;
-                broker.Size = 2;
-                broker.DirectionSS = 1;
-                initDataBufOnLevel(lv, broker, _showsys);
-                newitmtxt = broker.NextGlobal(broker.Start);
+                adapter.Start = lv.Items[lv.Items.Count - 1].Text;
+                adapter.Size = 2;
+                adapter.DirectionSS = 1;
+                initDataBufOnLevel(lv, adapter, _showsys);
+                newitmtxt = adapter.NextGlobal(adapter.Start);
                 if (newitmtxt !="")
                 {
                     item=lv.Items.Add(newitmtxt);
@@ -270,21 +270,21 @@ namespace cpm
         /// Стрелка вверх
         /// </summary>
         /// <param name="lv"></param>
-        /// <param name="broker"></param>
+        /// <param name="adapter"></param>
         /// <param name="evnt"></param>
         ///====================================================================
-        public void UpKeyDown(ListView lv, Broker broker, KeyEventArgs evnt)
+        public void UpKeyDown(ListView lv, Adapter adapter, KeyEventArgs evnt)
         {
             string newitmtxt;
             ListViewItem item = null;
             if (lv.Items[0].Selected &&
                 lv.Items[0].Text != "..")
             {
-                broker.Start = lv.Items[0].Text;
-                broker.Size = 2;
-                broker.DirectionSS = -1;
-                initDataBufOnLevel(lv, broker, _showsys);
-                newitmtxt = broker.PreviousGlobal(broker.Start);
+                adapter.Start = lv.Items[0].Text;
+                adapter.Size = 2;
+                adapter.DirectionSS = -1;
+                initDataBufOnLevel(lv, adapter, _showsys);
+                newitmtxt = adapter.PreviousGlobal(adapter.Start);
                 if (newitmtxt != "")
                 {
                     item = lv.Items.Insert(0, newitmtxt);
@@ -292,7 +292,7 @@ namespace cpm
                 }
                 else
                 {
-                    if (broker.Depth > 0)
+                    if (adapter.Depth > 0)
                     {
                         item = lv.Items.Insert(0, "..");
                         RemoveFrom(lv, lv.Items.Count - 1);
@@ -307,33 +307,33 @@ namespace cpm
         /// Кнопка Page Up
         /// </summary>
         /// <param name="lv"></param>
-        /// <param name="broker"></param>
+        /// <param name="adapter"></param>
         /// <param name="evnt"></param>
         ///====================================================================
-        public void PageUpKeyDown(ListView lv, Broker broker, KeyEventArgs evnt)
+        public void PageUpKeyDown(ListView lv, Adapter adapter, KeyEventArgs evnt)
         {
             string newitmtxt;
             ListViewItem item = null;
             if (lv.Items[0].Selected &&
                 lv.Items[0].Text != "..")
             {
-                broker.Start = lv.Items[0].Text;
-                broker.Size = _lvsize;
-                broker.DirectionSS = -1;
-                initDataBufOnLevel(lv, broker, _showsys);
-                newitmtxt = broker.PreviousGlobal(broker.Start);
+                adapter.Start = lv.Items[0].Text;
+                adapter.Size = _lvsize;
+                adapter.DirectionSS = -1;
+                initDataBufOnLevel(lv, adapter, _showsys);
+                newitmtxt = adapter.PreviousGlobal(adapter.Start);
                 if (newitmtxt != "")
                 {
                     while (newitmtxt != "")
                     {
                         item = lv.Items.Insert(0, newitmtxt);
                         RemoveFrom(lv, lv.Items.Count - 1);
-                        newitmtxt = broker.PreviousGlobal(newitmtxt);
+                        newitmtxt = adapter.PreviousGlobal(newitmtxt);
                     }
                 }
                 else
                 {
-                    if (broker.Depth > 0)
+                    if (adapter.Depth > 0)
                     {
                         item = lv.Items.Insert(0, "..");
                         RemoveFrom(lv, lv.Items.Count - 1);
@@ -348,25 +348,25 @@ namespace cpm
         /// Кнопка Page Down
         /// </summary>
         /// <param name="lv"></param>
-        /// <param name="broker"></param>
+        /// <param name="adapter"></param>
         /// <param name="evnt"></param>
         ///====================================================================
-        public void NextKeyDown(ListView lv, Broker broker, KeyEventArgs evnt)
+        public void NextKeyDown(ListView lv, Adapter adapter, KeyEventArgs evnt)
         {
             string newitmtxt;
             ListViewItem item = null;
             if (lv.Items[lv.Items.Count - 1].Selected)
             {
-                broker.Start = lv.Items[lv.Items.Count - 1].Text;
-                broker.Size = _lvsize;
-                broker.DirectionSS = 1;
-                initDataBufOnLevel(lv, broker, _showsys);
-                newitmtxt = broker.NextGlobal(broker.Start);
+                adapter.Start = lv.Items[lv.Items.Count - 1].Text;
+                adapter.Size = _lvsize;
+                adapter.DirectionSS = 1;
+                initDataBufOnLevel(lv, adapter, _showsys);
+                newitmtxt = adapter.NextGlobal(adapter.Start);
                 while (newitmtxt != "")
                 {
                     item = lv.Items.Add(newitmtxt);
                     RemoveFrom(lv, 0);
-                    newitmtxt = broker.NextGlobal(newitmtxt);
+                    newitmtxt = adapter.NextGlobal(newitmtxt);
                 }
 
             }
@@ -378,20 +378,20 @@ namespace cpm
             /// Перечитать содержимое ListView
             /// </summary>
             ///====================================================================
-        public void ReLoad(ListView lv, Broker broker)
+        public void ReLoad(ListView lv, Adapter adapter)
         {
             string glb;
             lv.Items.Clear();
-            glb = broker.NextGlobal("");
+            glb = adapter.NextGlobal("");
             while (glb != "")
             {
                 lv.Items.Add(glb);
-                glb = broker.NextGlobal(glb);
+                glb = adapter.NextGlobal(glb);
             }
 
-            if (broker.Depth > 0)
+            if (adapter.Depth > 0)
             {
-                if ((broker.Start == "") || 
+                if ((adapter.Start == "") || 
                     (lv.Items.Count==0))
                 {
                     lv.Items.Insert(0, "..");
@@ -486,7 +486,7 @@ namespace cpm
         private void CalcAndSetSize(ListView lv)
         {
             _lvsize = (int)(lv.Height / 18);
-            brokers[lv].Size = _lvsize;
+            adapters[lv].Size = _lvsize;
         }
         ///====================================================================
         /// <summary>

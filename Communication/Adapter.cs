@@ -7,7 +7,7 @@ using VISMLib;
 using Localization;
 namespace Communication
 {
-    public class Broker
+    public class Adapter
     {
         ///====================================================================
         /// Описание полей класса
@@ -125,7 +125,7 @@ namespace Communication
         /// Конструктор по-умолчанию
         /// </summary>
         ///====================================================================
-        public Broker()
+        public Adapter()
         {
             _vism = new VisM();
             _subscripts = new Stack<string>();
@@ -145,7 +145,7 @@ namespace Communication
         /// Деструктор
         /// </summary>
         ///====================================================================
-        ~Broker()
+        ~Adapter()
         {
 
         }
